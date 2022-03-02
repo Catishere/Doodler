@@ -169,9 +169,9 @@ export default class WordsModule extends VuexModule {
             this.animations_[row][col] = 'idle';
             this.context.commit('setAnimations', this.animations_.slice());
             resolve();
-          }, 250);
-        }, 250);
-      }, 500 * col);
+          }, 150);
+        }, 150);
+      }, 300 * col);
     });
   }
 }

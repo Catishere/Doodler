@@ -36,16 +36,29 @@ export class WordService {
 
     const decrypted = cryptoUtils.decrypt(word);
     const result: GuessWordResultDto = new GuessWordSuccessDto();
-    for (let i = 0; i < guess.length; i++) {
-      const ch = guess.charAt(i);
+    const decryptArray = decrypted.split('');
+    result.data = [...Array(5)];
+
+    const guessArray = guess.split('');
+
+    guessArray.forEach((ch, i) => {
       if (decrypted[i] === ch) {
-        result.data.push('correct');
-      } else if (decrypted.includes(ch)) {
-        result.data.push('present');
-      } else {
-        result.data.push('absent');
+        decryptArray.splice(i, 1, ' ');
+        result.data[i] = 'correct';
       }
-    }
+    });
+
+    guessArray.forEach((ch, i) => {
+      if (result.data[i] === 'correct') return;
+      const index = decryptArray.indexOf(ch);
+      if (index > -1) {
+        decryptArray.splice(index, 1, ' ');
+        result.data[i] = 'present';
+      } else {
+        result.data[i] = 'absent';
+      }
+    });
+
     return result;
   }
 

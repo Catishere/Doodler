@@ -1,15 +1,20 @@
 <template>
   <div class="overlay" @click="close()">
     <div class="window-container">
-      <div class="container">
-        <h1>Statistics</h1>
-        <div>{{ stats.games }} games played</div>
-        <div v-if="stats.games > 0">
-          {{ Math.round((stats.wins / stats.games) * 100) }}% wins
+      <div class="top-bar">
+        <div class="close" @click="close()">
+          <b-icon-x-circle style="color: white" />
         </div>
-        <div>{{ stats.streak }} current streak</div>
-        <div>{{ stats.maxStreak }} longest streak</div>
-        <div class="graph">
+      </div>
+      <div class="container">
+        <h1>Статистика</h1>
+        <div>{{ stats.games }} игри</div>
+        <div v-if="stats.games > 0">
+          {{ Math.round((stats.wins / stats.games) * 100) }}% победи
+        </div>
+        <div>{{ stats.streak }} победи подред</div>
+        <div>{{ stats.maxStreak }} рекорд победи подред</div>
+        <div v-if="stats.games > 0" class="graph">
           <div
             v-for="(solve, i) in stats.solves"
             :key="'solve-' + i"
@@ -24,16 +29,22 @@
             />
           </div>
         </div>
-        <button class="btn btn-dark" @click="copy()">Share results</button>
+        <button v-if="stats.lastTry > 0" class="btn btn-dark" @click="copy()">
+          <b-icon-share-fill />
+          Сподели
+        </button>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { Prop, Component, Vue, Emit } from 'nuxt-property-decorator';
+import { BIconShareFill, BIconXCircle } from 'bootstrap-vue';
 import WordStats from '@/client/types/word-stats.type';
 
-@Component
+@Component({
+  components: { BIconShareFill, BIconXCircle }
+})
 export default class WordleEndWindow extends Vue {
   @Prop({ default: {} })
   stats!: WordStats;
@@ -51,6 +62,10 @@ export default class WordleEndWindow extends Vue {
 </script>
 
 <style scoped>
+.top-bar {
+  margin: 5px;
+}
+
 .graph {
   margin: 20px 0;
 }

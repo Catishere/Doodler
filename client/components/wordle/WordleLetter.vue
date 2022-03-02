@@ -102,7 +102,7 @@ export default {
 }
 .tile[data-animation='flip-in'] {
   animation-name: FlipIn;
-  animation-duration: 250ms;
+  animation-duration: 150ms;
   animation-timing-function: ease-in;
 }
 @keyframes FlipIn {
@@ -115,7 +115,7 @@ export default {
 }
 .tile[data-animation='flip-out'] {
   animation-name: FlipOut;
-  animation-duration: 250ms;
+  animation-duration: 150ms;
   animation-timing-function: ease-in;
 }
 @keyframes FlipOut {

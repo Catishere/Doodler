@@ -1,8 +1,11 @@
 <template>
   <div class="game-container">
-    <button class="margin-top btn btn-dark" @click="fetchNewWord()">
-      Нова дума
-    </button>
+    <div class="buttons">
+      <button class="btn btn-dark" @click="fetchNewWord()">Нова дума</button>
+      <button class="btn btn-dark" @click="showStats = true">
+        <b-icon-bar-chart-fill />
+      </button>
+    </div>
     <div class="grid">
       <wordle-letter
         v-for="(letter, letter_id) in words.flat()"
@@ -31,10 +34,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
+import { BIconBarChartFill } from 'bootstrap-vue';
 import { getWordsModule } from '../../store';
 import WordStats from '../../types/word-stats.type';
 
-@Component
+@Component({ components: { BIconBarChartFill } })
 export default class WordleGame extends Vue {
   [x: string]: any;
   id: string = '';
@@ -336,14 +340,19 @@ export default class WordleGame extends Vue {
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
-.grid {
-  display: grid;
-  margin-top: 50px;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 5px 5px;
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 80%;
+  position: relative;
+  z-index: 1;
 }
 
-.margin-top {
-  margin-top: 20px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px 5px;
 }
 </style>

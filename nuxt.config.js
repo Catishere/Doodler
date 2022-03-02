@@ -1,6 +1,7 @@
 import bootstrap from './.nest/nest.js';
 
 const isDev = process.env.NODE_ENV === 'development';
+const port = process.env.PORT || 3000;
 
 const config = async () => ({
   srcDir: 'client/',
@@ -47,7 +48,7 @@ const config = async () => ({
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     proxy: isDev,
-    prefix: 'http://localhost:3000/api'
+    prefix: `http://localhost:${port}/api`
   },
   proxy: {
     '/api/': {
