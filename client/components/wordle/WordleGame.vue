@@ -1,6 +1,6 @@
 <template>
   <div class="game-container">
-    <button class="margin-top btn btn-primary" @click="fetchNewWord()">
+    <button class="margin-top btn btn-dark" @click="fetchNewWord()">
       Нова дума
     </button>
     <div class="grid">
@@ -19,20 +19,208 @@
       :render="updateKeyboard"
       @keyboard-press="(key) => onKeyPress(key)"
     />
-    <wordle-end-window v-show="success" />
+    <transition name="fade" mode="">
+      <wordle-end-window
+        v-show="showStats"
+        :stats="stats"
+        @copy="shareResults()"
+        @close="showStats = false"
+      />
+    </transition>
   </div>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { Component, Vue } from 'nuxt-property-decorator';
 import { getWordsModule } from '../../store';
+import WordStats from '../../types/word-stats.type';
 
 @Component
 export default class WordleGame extends Vue {
+  [x: string]: any;
   id: string = '';
   isChecking: boolean = false;
-  success: boolean = false;
+  showStats: boolean = false;
+  isWin: boolean = false;
   updateKeyboard: boolean = false;
+  stats: WordStats = {} as WordStats;
+
+  mounted() {
+    this.loadStats();
+    if (localStorage.getItem('game-info')) {
+      this.loadBoard();
+      const currRow = this.row === 0 ? 0 : this.row - 1;
+      setTimeout(() => {
+        this.isWin = this.states[currRow].every((el) => el === 'correct');
+        this.showStats = this.isWin || currRow >= 5;
+      }, 500);
+    } else if (localStorage.getItem('wordle-id') === undefined)
+      this.fetchNewWord();
+  }
+
+  async beforeMount() {
+    if (localStorage.getItem('wordle-id')) {
+      this.id = localStorage.getItem('wordle-id') ?? '';
+    } else {
+      const user = await this.$axios.$post('/user/join');
+      localStorage.setItem('wordle-id', user._id);
+    }
+
+    window.addEventListener('keydown', this.onKeyPress);
+  }
+
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.onKeyPress);
+  }
+
+  shareResults() {
+    let grid: string = 'Doodler ' + this.row + '/6\n';
+    for (let i = 0; i < this.row; i++) {
+      this.states[i].forEach((el) => {
+        switch (el) {
+          case 'correct':
+            grid += '🟩';
+            break;
+          case 'present':
+            grid += '🟨';
+            break;
+          case 'absent':
+            grid += '⬛';
+            break;
+        }
+      });
+      grid += '\n';
+    }
+    navigator.clipboard.writeText(grid);
+  }
+
+  async fetchNewWord() {
+    this.isWin = false;
+    this.showStats = false;
+    localStorage.removeItem('game-info');
+    try {
+      this.setWordKey(
+        await this.$axios.$get('/word/random', {
+          params: {
+            _id: this.id
+          }
+        })
+      );
+      localStorage.setItem('wordle-word', JSON.stringify(this.wordKey));
+
+      this.setRow(0);
+      this.setCol(0);
+      this.setStates([
+        ['empty', 'empty', 'empty', 'empty', 'empty'],
+        ['empty', 'empty', 'empty', 'empty', 'empty'],
+        ['empty', 'empty', 'empty', 'empty', 'empty'],
+        ['empty', 'empty', 'empty', 'empty', 'empty'],
+        ['empty', 'empty', 'empty', 'empty', 'empty'],
+        ['empty', 'empty', 'empty', 'empty', 'empty']
+      ]);
+      this.setWords([
+        [' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' ']
+      ]);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  saveBoard() {
+    localStorage.setItem(
+      'game-info',
+      JSON.stringify({
+        row: this.row,
+        words: this.words,
+        states: this.states
+      })
+    );
+  }
+
+  saveStats() {
+    this.stats.games++;
+    if (this.isWin) this.stats.wins++;
+    this.stats.streak = this.isWin ? this.stats.streak + 1 : 0;
+    this.stats.maxStreak = Math.max(this.stats.maxStreak, this.stats.streak);
+    this.stats.solves[this.row]++;
+    this.stats.lastTry = this.isWin ? this.row : -1;
+    localStorage.setItem('wordle-stat', JSON.stringify(this.stats));
+  }
+
+  loadBoard() {
+    const gameInfo = JSON.parse(localStorage.getItem('game-info') ?? '{}');
+    this.setRow(gameInfo.row);
+    this.setWords(gameInfo.words);
+    this.setStates(gameInfo.states);
+  }
+
+  loadStats() {
+    this.stats = JSON.parse(
+      localStorage.getItem('wordle-stat') ??
+        '{"games": 0, "wins": 0, "streak": 0, "maxStreak": 0, "solves": [0, 0, 0, 0, 0, 0]}'
+    );
+  }
+
+  async onKeyPress(event: KeyboardEvent) {
+    if (this.isWin) return;
+    if (event.key >= 'а' && event.key <= 'я' && this.col < 5 && this.row < 6) {
+      const currRow = this.row;
+      this.updateKeyboard = !this.updateKeyboard;
+      const currCol = this.col;
+      this.animations[currRow][currCol] = 'pop';
+      setTimeout(() => {
+        this.animations[currRow][currCol] = 'idle';
+      }, 200);
+      this.addLetter(event.key);
+      this.incrementCol();
+    } else if (
+      (event.key === 'Enter' || event.key === '↵') &&
+      this.col === 5 &&
+      this.isChecking === false
+    ) {
+      this.isChecking = true;
+      const rowCopy = this.row;
+
+      setTimeout(() => {
+        this.isChecking = false;
+      }, 500);
+
+      const response = await this.$axios.$post('/word/guess', {
+        _id: localStorage.getItem('wordle-id'),
+        word: JSON.parse(localStorage.getItem('wordle-word') ?? '{}').word,
+        guess: this.words[this.row].join('')
+      });
+
+      if (response.error !== undefined) return;
+      const result = response.data;
+      this.words[rowCopy].forEach((_, i) => {
+        this.flipInOut({ row: rowCopy, col: i, result: result[i] });
+      });
+
+      this.isWin = result.every((el: string) => el === 'correct');
+      if (this.isWin || rowCopy >= 5) {
+        this.saveStats();
+        this.showStats = true;
+      }
+
+      this.incrementRow();
+      this.setCol(0);
+      setTimeout(() => {
+        this.saveBoard();
+      }, 2500);
+    } else if (
+      (event.key === 'Backspace' || event.key === '⌫') &&
+      this.col > 0 &&
+      this.row < 6
+    ) {
+      this.eraseLetter();
+      this.incrementCol(-1);
+    }
+  }
 
   get states() {
     return getWordsModule(this.$store).states;
@@ -56,29 +244,6 @@ export default class WordleGame extends Vue {
 
   get wordKey() {
     return getWordsModule(this.$store).wordKey;
-  }
-
-  mounted() {
-    if (localStorage.getItem('game-info')) {
-      this.loadBoard();
-      const currRow = this.row === 0 ? 0 : this.row - 1;
-      this.success = this.states[currRow].every((el) => el === 'correct');
-    } else this.fetchNewWord();
-  }
-
-  async beforeMount() {
-    if (localStorage.getItem('wordle-id')) {
-      this.id = localStorage.getItem('wordle-id') ?? '';
-    } else {
-      const user = await this.$axios.$post('/user/join');
-      localStorage.setItem('wordle-id', user._id);
-    }
-
-    window.addEventListener('keydown', this.onKeyPress);
-  }
-
-  beforeDestroy() {
-    window.removeEventListener('keydown', this.onKeyPress);
   }
 
   setRow(row: number): void {
@@ -142,111 +307,19 @@ export default class WordleGame extends Vue {
   flipInOut(data: { row: number; col: number; result: string }): void {
     getWordsModule(this.$store).flipInOut(data);
   }
-
-  async fetchNewWord() {
-    localStorage.removeItem('game-info');
-    try {
-      this.setWordKey(
-        await this.$axios.$get('/word/random', {
-          params: {
-            _id: this.id
-          }
-        })
-      );
-      localStorage.setItem('wordle-word', JSON.stringify(this.wordKey));
-      this.setRow(0);
-      this.setCol(0);
-      this.setStates([
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty']
-      ]);
-      this.setWords([
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ']
-      ]);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  saveBoard() {
-    localStorage.setItem(
-      'game-info',
-      JSON.stringify({
-        row: this.row,
-        words: this.words,
-        states: this.states
-      })
-    );
-  }
-
-  loadBoard() {
-    const gameInfo = JSON.parse(localStorage.getItem('game-info') ?? '{}');
-    this.setRow(gameInfo.row);
-    this.setWords(gameInfo.words);
-    this.setStates(gameInfo.states);
-  }
-
-  async onKeyPress(event: KeyboardEvent) {
-    if (event.key >= 'а' && event.key <= 'я' && this.col < 5 && this.row < 6) {
-      const currRow = this.row;
-      this.updateKeyboard = !this.updateKeyboard;
-      const currCol = this.col;
-      this.animations[currRow][currCol] = 'pop';
-      setTimeout(() => {
-        this.animations[currRow][currCol] = 'idle';
-      }, 200);
-      this.addLetter(event.key);
-      this.incrementCol();
-    } else if (
-      (event.key === 'Enter' || event.key === '↵') &&
-      this.col === 5 &&
-      this.isChecking === false
-    ) {
-      this.isChecking = true;
-      const rowCopy = this.row;
-
-      setTimeout(() => {
-        this.isChecking = false;
-      }, 500);
-
-      setTimeout(() => {
-        this.success = this.states[rowCopy].every((el) => el === 'correct');
-      }, 3000);
-
-      const response = await this.$axios.$post('/word/guess', {
-        _id: localStorage.getItem('wordle-id'),
-        word: JSON.parse(localStorage.getItem('wordle-word') ?? '{}').word,
-        guess: this.words[this.row].join('')
-      });
-
-      if (response.error !== undefined) return;
-      const result = response.data;
-      this.words[rowCopy].forEach((_, i) => {
-        this.flipInOut({ row: rowCopy, col: i, result: result[i] });
-      });
-      this.incrementRow();
-      this.setCol(0);
-    } else if (
-      (event.key === 'Backspace' || event.key === '⌫') &&
-      this.col > 0 &&
-      this.row < 6
-    ) {
-      this.eraseLetter();
-      this.incrementCol(-1);
-    }
-  }
 }
 </script>
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .game-container {
   justify-content: center;
   width: 100%;
