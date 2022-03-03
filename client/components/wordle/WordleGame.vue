@@ -91,8 +91,15 @@ export default class WordleGame extends Vue {
 
   onResize() {
     const el = document.getElementById('grid') as HTMLElement;
-    el.style.width =
-      Math.min(window.innerWidth - 20, window.innerHeight * 0.97 - 310) + 'px';
+    const vw = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+    const vh = Math.max(
+      document.documentElement.clientHeight || 0,
+      window.innerHeight || 0
+    );
+    el.style.width = Math.min(vw - 20, vh * 0.97 - 310) + 'px';
   }
 
   shareResults() {
