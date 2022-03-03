@@ -45,10 +45,10 @@ const config = async () => ({
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {
-    // proxy: isDev,
-    // prefix: `${isDev ? baseUrl : ''}`
-  },
+  // axios: {
+  // proxy: isDev,
+  // prefix: `${isDev ? baseUrl : ''}`
+  // },
   // proxy: {
   //   '/api/': {
   //     target: 'http://localhost:4000/'
