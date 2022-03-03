@@ -72,7 +72,7 @@ export default {
 
 <style scoped>
 .keyboard {
-  margin-top: 10px;
+  margin: 5px;
   width: 100%;
   display: flex;
   align-items: center;

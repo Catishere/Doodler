@@ -75,7 +75,7 @@ export class WordService {
     const model = await this.WordModel.aggregate<Word>([
       { $sample: { size: 1 } }
     ]);
-    console.log(model[0].word);
+    console.log(`Word: ${model[0].word}`);
     const encryptedText = cryptoUtils.encrypt(model[0].word);
     return { word: encryptedText };
   }

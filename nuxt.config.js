@@ -51,13 +51,12 @@ const config = async () => ({
     baseUrl: isLocal
       ? 'http://localhost:3000'
       : 'https://woordler.herokuapp.com'
-    // prefix: `${isDev ? baseUrl : ''}`
   },
-  // proxy: {
-  //   '/api/': {
-  //     target: 'http://localhost:4000/'
-  //   }
-  // },
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:4000/'
+    }
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {}

@@ -57,8 +57,9 @@ export default class WordleGame extends Vue {
         this.isWin = this.states[currRow].every((el) => el === 'correct');
         this.showStats = this.isWin || currRow >= 5;
       }, 500);
-    } else if (localStorage.getItem('wordle-id') === undefined)
+    } else if (localStorage.getItem('wordle-word') === null) {
       this.fetchNewWord();
+    }
   }
 
   async beforeMount() {
@@ -346,13 +347,17 @@ export default class WordleGame extends Vue {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  width: 80%;
+  width: 50%;
+  padding: 5px 0px;
   position: relative;
   z-index: 1;
 }
 
 .grid {
   display: grid;
+  width: 100%;
+  max-width: 500px;
+  padding: 0 25px;
   grid-template-columns: repeat(5, 1fr);
   gap: 5px 5px;
 }

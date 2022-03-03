@@ -36,10 +36,6 @@ export default {
 
 .tile {
   background-color: transparent;
-  width: 70px;
-  min-width: 70px;
-  height: 70px;
-  line-height: 70px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
