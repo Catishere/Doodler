@@ -64,6 +64,7 @@ export class WordService {
 
   async getRandom(wordRequest: WordRequestDto): Promise<Word> {
     const { _id } = wordRequest;
+    if (!_id) return { word: '' };
     const user = await this.UserModel.findById(_id);
     if (user === null) {
       throw new Error('User not found');

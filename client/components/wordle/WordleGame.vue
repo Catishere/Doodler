@@ -67,6 +67,7 @@ export default class WordleGame extends Vue {
     } else {
       const user = await this.$axios.$post('/api/user/join');
       localStorage.setItem('wordle-id', user._id);
+      this.id = user._id;
     }
 
     window.addEventListener('keydown', this.onKeyPress);
