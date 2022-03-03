@@ -385,7 +385,7 @@ export default class WordleGame extends Vue {
 }
 
 .game-container {
-  justify-content: center;
+  justify-content: space-between;
   width: 97%;
   display: flex;
   align-items: center;
