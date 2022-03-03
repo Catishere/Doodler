@@ -1,6 +1,7 @@
 import bootstrap from './.nest/nest.js';
 
 const isDev = process.env.NODE_ENV === 'development';
+const isLocal = process.env.LOCAL === 'true';
 
 const config = async () => ({
   srcDir: 'client/',
@@ -45,10 +46,13 @@ const config = async () => ({
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  // axios: {
-  // proxy: isDev,
-  // prefix: `${isDev ? baseUrl : ''}`
-  // },
+  axios: {
+    proxy: isDev,
+    baseUrl: isLocal
+      ? 'http://localhost:3000'
+      : 'https://woordler.herokuapp.com'
+    // prefix: `${isDev ? baseUrl : ''}`
+  },
   // proxy: {
   //   '/api/': {
   //     target: 'http://localhost:4000/'
