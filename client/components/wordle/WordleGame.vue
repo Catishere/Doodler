@@ -398,7 +398,7 @@ export default class WordleGame extends Vue {
   width: 97%;
   display: flex;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   flex-direction: column;
   -webkit-touch-callout: none; /* iOS Safari */
