@@ -1,7 +1,7 @@
 import bootstrap from './.nest/nest.js';
 
 const isDev = process.env.NODE_ENV === 'development';
-const baseUrl = process.env.baseURL || 'http://localhost:3000/';
+// const baseUrl = process.env.baseURL || 'http://localhost:3000/';
 
 const config = async () => ({
   srcDir: 'client/',
@@ -47,14 +47,14 @@ const config = async () => ({
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    proxy: isDev,
-    prefix: `${isDev ? baseUrl : ''}`
+    // proxy: isDev,
+    // prefix: `${isDev ? baseUrl : ''}`
   },
-  proxy: {
-    '/api/': {
-      target: 'http://localhost:4000/'
-    }
-  },
+  // proxy: {
+  //   '/api/': {
+  //     target: 'http://localhost:4000/'
+  //   }
+  // },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {}
