@@ -50,6 +50,7 @@ export default class WordleGame extends Vue {
   id: string = '';
   rowAnimations: string[] = ['', '', '', '', '', ''];
   isChecking: boolean = false;
+  isWrongKeyboardDisplayed: boolean = false;
   showStats: boolean = false;
   isWin: boolean = false;
   updateKeyboard: boolean = false;
@@ -194,9 +195,17 @@ export default class WordleGame extends Vue {
 
   async onKeyPress(event: KeyboardEvent) {
     if (this.isWin) return;
-    if (event.key >= 'a' && event.key <= 'z') {
+    if (
+      event.key >= 'a' &&
+      event.key <= 'z' &&
+      !this.isWrongKeyboardDisplayed
+    ) {
       this.shakeRow(this.row);
       this.showToaster('Пиши на кирилица');
+      this.isWrongKeyboardDisplayed = true;
+      setTimeout(() => {
+        this.isWrongKeyboardDisplayed = false;
+      }, 1000);
       return;
     }
     if (event.key >= 'а' && event.key <= 'я' && this.col < 5 && this.row < 6) {
@@ -379,7 +388,7 @@ export default class WordleGame extends Vue {
   width: 97%;
   display: flex;
   align-items: center;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
   flex-direction: column;
   -webkit-touch-callout: none; /* iOS Safari */
@@ -393,10 +402,10 @@ export default class WordleGame extends Vue {
 
 .buttons {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  width: 50%;
   padding: 5px 0px;
+  gap: 10px;
   position: relative;
 }
 

@@ -54,14 +54,6 @@ export default {
   padding-bottom: 100%;
 }
 
-/* Allow tiles to be smaller on small screens */
-@media (max-height: 600px) {
-  .tile {
-    font-size: 1em;
-    line-height: 1em;
-  }
-}
-
 .tile[data-state='empty'] {
   border: 2px solid #3a3a3c;
 }

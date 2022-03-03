@@ -9,12 +9,30 @@
       <div class="container">
         <h1>Статистика</h1>
         <h5 v-if="stats.success">Браво!</h5>
-        <div>{{ stats.games }} игри</div>
-        <div v-if="stats.games > 0">
-          {{ Math.round((stats.wins / stats.games) * 100) }}% победи
+        <div class="stat-boxes">
+          <div class="stats-pair">
+            <div class="stat-box">
+              <div class="stat-box-value">{{ stats.games }}</div>
+              <div class="stat-box-title">Игри</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-box-value">
+                {{ Math.round((stats.wins / stats.games) * 100) }}
+              </div>
+              <div class="stat-box-title">% Победи</div>
+            </div>
+          </div>
+          <div class="stats-pair">
+            <div class="stat-box">
+              <div class="stat-box-value">{{ stats.streak }}</div>
+              <div class="stat-box-title">Победи подред</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-box-value">{{ stats.maxStreak }}</div>
+              <div class="stat-box-title">Рекорд</div>
+            </div>
+          </div>
         </div>
-        <div>{{ stats.streak }} победи подред</div>
-        <div>{{ stats.maxStreak }} рекорд победи подред</div>
         <div v-if="stats.games > 0" class="graph">
           <div
             v-for="(solve, i) in stats.solves"
@@ -84,6 +102,56 @@ export default class WordleEndWindow extends Vue {
   -webkit-box-shadow: none;
   box-shadow: none;
   width: 100%;
+}
+
+.stat-boxes {
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+  justify-content: center;
+  flex-wrap: nowrap;
+  align-content: stretch;
+  margin-top: 20px;
+}
+
+.stats-pair {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: stretch;
+  align-items: center;
+}
+
+@media screen and (min-width: 768px) {
+  .stats-pair {
+    flex-wrap: nowrap;
+  }
+}
+
+.stat-box {
+  flex-basis: 100%;
+  flex-grow: 1;
+  padding: 10px 5px;
+  border-radius: 6px;
+  flex-shrink: 2;
+  margin: 5px;
+  background-color: rgb(17, 17, 17);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-box-title {
+  font-size: 0.7rem;
+  margin-top: 5px;
+}
+
+.stat-box-value {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .overlay {
