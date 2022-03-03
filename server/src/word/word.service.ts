@@ -10,6 +10,7 @@ import {
   GuessWordSuccessDto
 } from './dto/guess-word-result.dto';
 import { WordRequestDto } from './dto/word-request.dto';
+import { RandomWordResultDto } from './dto/random-word-result.dto';
 
 @Injectable()
 export class WordService {
@@ -21,16 +22,22 @@ export class WordService {
   async guess(guessDto: GuessWordDto): Promise<GuessWordResultDto> {
     const { word, guess, _id } = guessDto;
     const user = await this.UserModel.findById(_id);
+    const wordExists = await this.WordModel.findOne({ word: guess });
+
     if (user === null) {
-      return { error: 'User not found' };
-    } else {
-      if (user.guesses < 6) user.guesses++;
-      await user.save();
+      return { error: 'Ти не си човек' };
     }
+
+    if (wordExists === null) {
+      return { error: 'Няма такава дума' };
+    }
+
+    if (user.guesses < 6) user.guesses++;
+    await user.save();
 
     if (user.guesses > 6) {
       return {
-        error: `You have used all your guesses (${user.guesses} guesses used)`
+        error: `Ти използва всичките си опити`
       };
     }
 
@@ -62,16 +69,15 @@ export class WordService {
     return result;
   }
 
-  async getRandom(wordRequest: WordRequestDto): Promise<Word> {
+  async getRandom(wordRequest: WordRequestDto): Promise<RandomWordResultDto> {
     const { _id } = wordRequest;
     if (!_id) return { word: '' };
     const user = await this.UserModel.findById(_id);
     if (user === null) {
-      throw new Error('User not found');
-    } else {
-      user.guesses = 0;
-      user.save();
+      return { error: 'Ти не си човек' };
     }
+    user.guesses = 0;
+    user.save();
     const model = await this.WordModel.aggregate<Word>([
       { $sample: { size: 1 } }
     ]);

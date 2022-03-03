@@ -5,6 +5,7 @@ interface WordStats {
   maxStreak: number; // longest streak of wins
   solves: number[]; // number of solves per level
   lastTry: number; // timestamp of last try
+  success: boolean; // whether the last try was successful
 }
 
 export default WordStats;

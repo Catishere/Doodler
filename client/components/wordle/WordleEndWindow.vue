@@ -8,6 +8,7 @@
       </div>
       <div class="container">
         <h1>Статистика</h1>
+        <h5 v-if="stats.success">Браво!</h5>
         <div>{{ stats.games }} игри</div>
         <div v-if="stats.games > 0">
           {{ Math.round((stats.wins / stats.games) * 100) }}% победи

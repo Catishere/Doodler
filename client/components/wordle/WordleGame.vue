@@ -7,14 +7,20 @@
       </button>
     </div>
     <div class="grid">
-      <wordle-letter
-        v-for="(letter, letter_id) in words.flat()"
-        :ref="letter_id + '-letter'"
-        :key="letter_id + '-letter'"
-        :state="states[Math.floor(letter_id / 5)][letter_id % 5]"
-        :animation="animations[Math.floor(letter_id / 5)][letter_id % 5]"
-        :letter="letter"
-      />
+      <div
+        v-for="(row, row_id) in words"
+        :key="row_id + '-row'"
+        :class="'grid-row ' + rowAnimations[row_id]"
+      >
+        <wordle-letter
+          v-for="(letter, letter_id) in row"
+          :ref="letter_id + '-letter'"
+          :key="letter_id + '-letter'"
+          :state="states[row_id][letter_id]"
+          :animation="animations[row_id][letter_id]"
+          :letter="letter"
+        />
+      </div>
     </div>
     <wordle-keyboard
       :words="words"
@@ -42,6 +48,7 @@ import WordStats from '../../types/word-stats.type';
 export default class WordleGame extends Vue {
   [x: string]: any;
   id: string = '';
+  rowAnimations: string[] = ['', '', '', '', '', ''];
   isChecking: boolean = false;
   showStats: boolean = false;
   isWin: boolean = false;
@@ -149,11 +156,14 @@ export default class WordleGame extends Vue {
 
   saveStats() {
     this.stats.games++;
-    if (this.isWin) this.stats.wins++;
+    if (this.isWin) {
+      this.stats.wins++;
+      this.stats.solves[this.row]++;
+    }
     this.stats.streak = this.isWin ? this.stats.streak + 1 : 0;
     this.stats.maxStreak = Math.max(this.stats.maxStreak, this.stats.streak);
-    this.stats.solves[this.row]++;
     this.stats.lastTry = this.isWin ? this.row : -1;
+    this.stats.success = this.isWin;
     localStorage.setItem('wordle-stat', JSON.stringify(this.stats));
   }
 
@@ -171,8 +181,24 @@ export default class WordleGame extends Vue {
     );
   }
 
+  shakeRow(id: number) {
+    const newRow = this.rowAnimations.slice();
+    newRow[id] = 'shake';
+    this.rowAnimations = newRow;
+    setTimeout(() => {
+      const newRow = this.rowAnimations.slice();
+      newRow[id] = '';
+      this.rowAnimations = newRow;
+    }, 500);
+  }
+
   async onKeyPress(event: KeyboardEvent) {
     if (this.isWin) return;
+    if (event.key >= 'a' && event.key <= 'z') {
+      this.shakeRow(this.row);
+      this.showToaster('Пиши на кирилица');
+      return;
+    }
     if (event.key >= 'а' && event.key <= 'я' && this.col < 5 && this.row < 6) {
       const currRow = this.row;
       this.updateKeyboard = !this.updateKeyboard;
@@ -185,9 +211,14 @@ export default class WordleGame extends Vue {
       this.incrementCol();
     } else if (
       (event.key === 'Enter' || event.key === '↵') &&
-      this.col === 5 &&
       this.isChecking === false
     ) {
+      if (this.col !== 5) {
+        this.shakeRow(this.row);
+        this.showToaster('Недостатъчно букви');
+        return;
+      }
+
       this.isChecking = true;
       const rowCopy = this.row;
 
@@ -201,7 +232,11 @@ export default class WordleGame extends Vue {
         guess: this.words[this.row].join('')
       });
 
-      if (response.error !== undefined) return;
+      if (response.error !== undefined) {
+        this.shakeRow(this.row);
+        this.showToaster(response.error);
+        return;
+      }
       const result = response.data;
       this.words[rowCopy].forEach((_, i) => {
         this.flipInOut({ row: rowCopy, col: i, result: result[i] });
@@ -226,6 +261,19 @@ export default class WordleGame extends Vue {
       this.eraseLetter();
       this.incrementCol(-1);
     }
+  }
+
+  showToaster(message: string) {
+    this.$bvToast.toast(message, {
+      autoHideDelay: 1000,
+      appendToast: false,
+      solid: true,
+      toaster: 'b-toaster-top-center',
+      noCloseButton: true,
+      noHoverPause: true,
+      bodyClass: 'toast-body',
+      headerClass: 'toast-header'
+    });
   }
 
   get states() {
@@ -328,7 +376,7 @@ export default class WordleGame extends Vue {
 
 .game-container {
   justify-content: center;
-  width: 100%;
+  width: 97%;
   display: flex;
   align-items: center;
   height: 100%;
@@ -350,7 +398,6 @@ export default class WordleGame extends Vue {
   width: 50%;
   padding: 5px 0px;
   position: relative;
-  z-index: 1;
 }
 
 .grid {
@@ -358,7 +405,53 @@ export default class WordleGame extends Vue {
   width: 100%;
   max-width: 500px;
   padding: 0 25px;
+  gap: 5px 5px;
+}
+
+.grid-row {
+  display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 5px 5px;
+}
+
+.shake {
+  animation-name: shake;
+  animation-duration: 0.6s;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+</style>
+
+<style>
+.b-toaster {
+  margin-top: 100px !important;
+}
+
+.toast-body {
+  width: auto;
+  font-weight: bolder;
+  border-radius: 15px;
+  text-align: center;
 }
 </style>
