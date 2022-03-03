@@ -171,8 +171,11 @@ export default class WordleEndWindow extends Vue {
   display: relative;
   width: 90%;
   max-width: 500px;
+  height: 500px;
+  max-height: 80%;
   padding-bottom: 20px;
   border-radius: 15px;
   background-color: rgb(41, 41, 41);
+  overflow-y: auto;
 }
 </style>

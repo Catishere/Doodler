@@ -57,6 +57,7 @@ export default class WordleGame extends Vue {
   stats: WordStats = {} as WordStats;
 
   mounted() {
+    this.onResize();
     this.loadStats();
     if (localStorage.getItem('game-info')) {
       this.loadBoard();
@@ -89,9 +90,9 @@ export default class WordleGame extends Vue {
   }
 
   onResize() {
-    // resize grid
     const el = document.getElementById('grid') as HTMLElement;
-    el.style.width = window.innerHeight - 390 + 'px';
+    el.style.width =
+      Math.min(window.innerWidth - 20, window.innerHeight * 0.97 - 310) + 'px';
   }
 
   shareResults() {
