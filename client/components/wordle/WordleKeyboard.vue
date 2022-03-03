@@ -72,10 +72,12 @@ export default {
 
 <style scoped>
 .keyboard {
-  margin: 5px;
+  flex-shrink: 0;
+  margin-bottom: 5px;
   width: 100%;
   display: flex;
   align-items: center;
+  align-self: flex-end;
   flex-direction: column;
 }
 .keyboard-row {
