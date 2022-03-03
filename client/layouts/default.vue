@@ -9,8 +9,8 @@
   text-align: center;
   color: #919191;
   background: #121212;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   touch-action: manipulation;
