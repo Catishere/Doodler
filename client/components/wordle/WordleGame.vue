@@ -105,6 +105,7 @@ export default class WordleGame extends Vue {
       grid += '\n';
     }
     navigator.clipboard.writeText(grid);
+    this.showToaster('Копирано!');
   }
 
   async fetchNewWord() {

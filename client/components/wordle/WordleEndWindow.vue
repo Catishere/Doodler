@@ -48,7 +48,7 @@
             />
           </div>
         </div>
-        <button v-if="stats.lastTry > 0" class="btn btn-dark" @click="copy()">
+        <button v-if="stats.success" class="btn btn-dark" @click="copy()">
           <b-icon-share-fill />
           Сподели
         </button>
@@ -171,7 +171,7 @@ export default class WordleEndWindow extends Vue {
   display: relative;
   width: 90%;
   max-width: 500px;
-  height: 500px;
+  padding-bottom: 20px;
   border-radius: 15px;
   background-color: rgb(41, 41, 41);
 }
