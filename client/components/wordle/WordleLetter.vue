@@ -48,6 +48,20 @@ export default {
   text-transform: uppercase;
   user-select: none;
 }
+
+@media screen and (max-width: 300px) {
+  .tile {
+    font-size: 1rem;
+    line-height: 1rem;
+  }
+}
+@media screen and (max-height: 600px) {
+  .tile {
+    font-size: 1rem;
+    line-height: 1rem;
+  }
+}
+
 .tile::before {
   content: '';
   display: inline-block;

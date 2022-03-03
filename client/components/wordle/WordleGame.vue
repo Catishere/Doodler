@@ -6,7 +6,7 @@
         <b-icon-bar-chart-fill />
       </button>
     </div>
-    <div class="grid">
+    <div id="grid" class="grid">
       <div
         v-for="(row, row_id) in words"
         :key="row_id + '-row'"
@@ -80,10 +80,18 @@ export default class WordleGame extends Vue {
     }
 
     window.addEventListener('keydown', this.onKeyPress);
+    window.addEventListener('resize', this.onResize);
   }
 
   beforeDestroy() {
     window.removeEventListener('keydown', this.onKeyPress);
+    window.addEventListener('resize', this.onResize);
+  }
+
+  onResize() {
+    // resize grid
+    const el = document.getElementById('grid') as HTMLElement;
+    el.style.width = window.innerHeight - 390 + 'px';
   }
 
   shareResults() {
@@ -414,7 +422,6 @@ export default class WordleGame extends Vue {
   display: grid;
   width: 100%;
   max-width: 500px;
-  padding: 0 25px;
   gap: 5px 5px;
 }
 
