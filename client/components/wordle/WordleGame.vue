@@ -65,7 +65,7 @@ export default class WordleGame extends Vue {
     if (localStorage.getItem('wordle-id')) {
       this.id = localStorage.getItem('wordle-id') ?? '';
     } else {
-      const user = await this.$axios.$post('/user/join');
+      const user = await this.$axios.$post('/api/user/join');
       localStorage.setItem('wordle-id', user._id);
     }
 
@@ -103,7 +103,7 @@ export default class WordleGame extends Vue {
     localStorage.removeItem('game-info');
     try {
       this.setWordKey(
-        await this.$axios.$get('/word/random', {
+        await this.$axios.$get('/api/word/random', {
           params: {
             _id: this.id
           }
@@ -193,7 +193,7 @@ export default class WordleGame extends Vue {
         this.isChecking = false;
       }, 500);
 
-      const response = await this.$axios.$post('/word/guess', {
+      const response = await this.$axios.$post('/api/word/guess', {
         _id: localStorage.getItem('wordle-id'),
         word: JSON.parse(localStorage.getItem('wordle-word') ?? '{}').word,
         guess: this.words[this.row].join('')
