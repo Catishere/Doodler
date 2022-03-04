@@ -10,14 +10,20 @@
   color: #919191;
   background: #121212;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - env(safe-area-inset-bottom));
   display: flex;
+  overflow: hidden;
   justify-content: center;
   touch-action: manipulation;
 }
 
+body {
+  position: fixed;
+  overflow: hidden;
+}
+
 html {
-  overflow-y: hidden;
+  overflow: hidden;
   font-family: 'Gotham', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 16px;
   word-spacing: 1px;

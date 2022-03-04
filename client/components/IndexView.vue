@@ -11,6 +11,9 @@ import { Component, Vue } from 'nuxt-property-decorator';
 @Component
 export default class IndexView extends Vue {
   data: string = '';
+  mounted() {
+    this.data = `${window.innerHeight} - ${window.innerWidth}`;
+  }
 }
 </script>
 
