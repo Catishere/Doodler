@@ -80,6 +80,13 @@ export default {
   align-self: flex-end;
   flex-direction: column;
 }
+
+@media screen and (max-width: 330px) {
+  .keyboard {
+    font-size: 0.6rem;
+  }
+}
+
 .keyboard-row {
   display: flex;
   width: 100%;

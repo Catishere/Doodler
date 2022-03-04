@@ -99,7 +99,7 @@ export default class WordleGame extends Vue {
       document.documentElement.clientHeight || 0,
       window.innerHeight || 0
     );
-    el.style.width = Math.min(vw - 20, vh * 0.97 - 310) + 'px';
+    el.style.width = Math.min(vw - 20, vh * 0.89 - 274) + 'px';
   }
 
   shareResults() {
