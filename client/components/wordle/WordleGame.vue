@@ -89,9 +89,6 @@ export default class WordleGame extends Vue {
   }
 
   onResize() {
-    const doc = document.documentElement;
-    doc.style.setProperty('--app-height', `${window.innerHeight}px`);
-
     const el = document.getElementById('grid') as HTMLElement;
     const factor =
       window.innerHeight < 800 ? (window.innerHeight < 600 ? 0.91 : 0.9) : 0.89;
