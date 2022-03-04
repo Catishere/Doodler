@@ -66,7 +66,10 @@ export default class WordleGame extends Vue {
         this.isWin = this.states[currRow].every((el) => el === 'correct');
         this.showStats = this.isWin || currRow >= 5;
       }, 500);
-    } else if (localStorage.getItem('wordle-word') === null) {
+    } else if (
+      localStorage.getItem('wordle-word') === null ||
+      localStorage.getItem('wordle-word') === ''
+    ) {
       this.fetchNewWord();
     }
   }
