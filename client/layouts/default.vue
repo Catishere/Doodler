@@ -5,6 +5,9 @@
 </template>
 
 <style>
+:root {
+  --app-height: 100%;
+}
 .app {
   text-align: center;
   color: #919191;
@@ -14,6 +17,24 @@
   display: flex;
   justify-content: center;
   touch-action: manipulation;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+@media not all and (hover: hover) {
+  body {
+    height: var(--app-height);
+  }
+  html {
+    height: var(--app-height);
+  }
 }
 
 html {

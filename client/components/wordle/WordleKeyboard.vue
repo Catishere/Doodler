@@ -73,7 +73,7 @@ export default {
 <style scoped>
 .keyboard {
   flex-shrink: 0;
-  margin-bottom: 5px;
+  margin-bottom: 58px;
   width: 100%;
   display: flex;
   align-items: center;
