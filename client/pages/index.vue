@@ -2,6 +2,7 @@
   <div class="page-container">
     <navbar-component />
     <h1>тва тук е главната страница</h1>
+    <index-view />
   </div>
 </template>
 
