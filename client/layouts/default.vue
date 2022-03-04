@@ -17,6 +17,7 @@
 }
 
 html {
+  overflow-y: hidden;
   font-family: 'Gotham', 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 16px;
   word-spacing: 1px;
