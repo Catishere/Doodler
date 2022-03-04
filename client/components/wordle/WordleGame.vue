@@ -66,11 +66,6 @@ export default class WordleGame extends Vue {
         this.isWin = this.states[currRow].every((el) => el === 'correct');
         this.showStats = this.isWin || currRow >= 5;
       }, 500);
-    } else if (
-      localStorage.getItem('wordle-word') === null ||
-      localStorage.getItem('wordle-word') === ''
-    ) {
-      this.fetchNewWord();
     }
   }
 
@@ -81,6 +76,7 @@ export default class WordleGame extends Vue {
       const user = await this.$axios.$post('/api/user/join');
       localStorage.setItem('wordle-id', user._id);
       this.id = user._id;
+      this.fetchNewWord();
     }
 
     window.addEventListener('keydown', this.onKeyPress);
@@ -127,6 +123,27 @@ export default class WordleGame extends Vue {
     this.showToaster('Копирано!');
   }
 
+  clearBoard() {
+    this.setRow(0);
+    this.setCol(0);
+    this.setStates([
+      ['empty', 'empty', 'empty', 'empty', 'empty'],
+      ['empty', 'empty', 'empty', 'empty', 'empty'],
+      ['empty', 'empty', 'empty', 'empty', 'empty'],
+      ['empty', 'empty', 'empty', 'empty', 'empty'],
+      ['empty', 'empty', 'empty', 'empty', 'empty'],
+      ['empty', 'empty', 'empty', 'empty', 'empty']
+    ]);
+    this.setWords([
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ']
+    ]);
+  }
+
   async fetchNewWord() {
     this.isWin = false;
     this.showStats = false;
@@ -140,25 +157,7 @@ export default class WordleGame extends Vue {
         })
       );
       localStorage.setItem('wordle-word', JSON.stringify(this.wordKey));
-
-      this.setRow(0);
-      this.setCol(0);
-      this.setStates([
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty'],
-        ['empty', 'empty', 'empty', 'empty', 'empty']
-      ]);
-      this.setWords([
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ']
-      ]);
+      this.clearBoard();
     } catch (e) {
       console.error(e);
     }
@@ -213,6 +212,14 @@ export default class WordleGame extends Vue {
     }, 500);
   }
 
+  async guess() {
+    return await this.$axios.$post('/api/word/guess', {
+      _id: localStorage.getItem('wordle-id'),
+      word: JSON.parse(localStorage.getItem('wordle-word') ?? '{}').word,
+      guess: this.words[this.row].join('')
+    });
+  }
+
   async onKeyPress(event: KeyboardEvent) {
     if (this.isWin) return;
     if (
@@ -255,16 +262,24 @@ export default class WordleGame extends Vue {
         this.isChecking = false;
       }, 500);
 
-      const response = await this.$axios.$post('/api/word/guess', {
-        _id: localStorage.getItem('wordle-id'),
-        word: JSON.parse(localStorage.getItem('wordle-word') ?? '{}').word,
-        guess: this.words[this.row].join('')
-      });
+      let response = await this.guess();
 
       if (response.error !== undefined) {
-        this.shakeRow(this.row);
-        this.showToaster(response.error);
-        return;
+        if (response.error !== 'EXPIRED') {
+          this.shakeRow(this.row);
+          this.showToaster(response.error);
+          return;
+        }
+        localStorage.setItem(
+          'wordle-word',
+          JSON.stringify({ word: response.info })
+        );
+        response = await this.guess();
+        if (this.row > 0) {
+          this.showToaster('Опа');
+          this.clearBoard();
+          return;
+        }
       }
       const result = response.data;
       this.words[rowCopy].forEach((_, i) => {

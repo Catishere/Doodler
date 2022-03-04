@@ -1,9 +1,19 @@
 export class RandomWordResultSuccessDto {
-  word!: string;
+  ok: boolean = true;
+  word: string;
+
+  constructor(word: string) {
+    this.word = word;
+  }
 }
 
 export class RandomWordResultErrorDto {
-  error?: string;
+  ok: boolean = false;
+  error: string;
+
+  constructor(error: string) {
+    this.error = error;
+  }
 }
 
 export type RandomWordResultDto =
