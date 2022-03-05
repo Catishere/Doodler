@@ -10,7 +10,7 @@
   color: #919191;
   background: #121212;
   width: 100vw;
-  height: calc(100vh - env(safe-area-inset-bottom));
+  height: 100vh;
   display: flex;
   overflow: hidden;
   justify-content: center;

@@ -1,57 +1,59 @@
 <template>
   <div class="overlay" @click="close()">
     <div class="window-container">
-      <div class="top-bar">
-        <div class="close" @click="close()">
-          <b-icon-x-circle style="color: white" />
+      <div class="scrollable">
+        <div class="top-bar">
+          <div class="close" @click="close()">
+            <b-icon-x-circle style="color: white" />
+          </div>
         </div>
-      </div>
-      <div class="container">
-        <h1>Статистика</h1>
-        <h5 v-if="stats.success">Браво!</h5>
-        <div class="stat-boxes">
-          <div class="stats-pair">
-            <div class="stat-box">
-              <div class="stat-box-value">{{ stats.games }}</div>
-              <div class="stat-box-title">Игри</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-box-value">
-                {{ Math.round((stats.wins / stats.games) * 100) }}
+        <div class="container">
+          <h1>Статистика</h1>
+          <h5 v-if="stats.success">Браво!</h5>
+          <div class="stat-boxes">
+            <div class="stats-pair">
+              <div class="stat-box">
+                <div class="stat-box-value">{{ stats.games }}</div>
+                <div class="stat-box-title">Игри</div>
               </div>
-              <div class="stat-box-title">% Победи</div>
+              <div class="stat-box">
+                <div class="stat-box-value">
+                  {{ Math.round((stats.wins / stats.games) * 100) }}
+                </div>
+                <div class="stat-box-title">% Победи</div>
+              </div>
+            </div>
+            <div class="stats-pair">
+              <div class="stat-box">
+                <div class="stat-box-value">{{ stats.streak }}</div>
+                <div class="stat-box-title">Победи подред</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-box-value">{{ stats.maxStreak }}</div>
+                <div class="stat-box-title">Рекорд</div>
+              </div>
             </div>
           </div>
-          <div class="stats-pair">
-            <div class="stat-box">
-              <div class="stat-box-value">{{ stats.streak }}</div>
-              <div class="stat-box-title">Победи подред</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-box-value">{{ stats.maxStreak }}</div>
-              <div class="stat-box-title">Рекорд</div>
+          <div v-if="stats.games > 0" class="graph">
+            <div
+              v-for="(solve, i) in stats.solves"
+              :key="'solve-' + i"
+              class="graph-item"
+            >
+              <div class="graph-item-number">{{ i + 1 }}</div>
+              <b-progress
+                :value="solve"
+                :variant="stats.lastTry == i ? 'success' : 'secondary'"
+                :max="Math.max(...stats.solves)"
+                show-value
+              />
             </div>
           </div>
+          <button v-if="stats.success" class="btn btn-dark" @click="copy()">
+            <b-icon-share-fill />
+            Сподели
+          </button>
         </div>
-        <div v-if="stats.games > 0" class="graph">
-          <div
-            v-for="(solve, i) in stats.solves"
-            :key="'solve-' + i"
-            class="graph-item"
-          >
-            <div class="graph-item-number">{{ i + 1 }}</div>
-            <b-progress
-              :value="solve"
-              :variant="stats.lastTry == i ? 'success' : 'secondary'"
-              :max="Math.max(...stats.solves)"
-              show-value
-            />
-          </div>
-        </div>
-        <button v-if="stats.success" class="btn btn-dark" @click="copy()">
-          <b-icon-share-fill />
-          Сподели
-        </button>
       </div>
     </div>
   </div>
@@ -176,6 +178,14 @@ export default class WordleEndWindow extends Vue {
   padding-bottom: 20px;
   border-radius: 15px;
   background-color: rgb(41, 41, 41);
+}
+
+.scrollable {
+  width: 100%;
+  height: 100%;
+  margin: 10px 0px;
+  padding: 0 2%;
+  display: relative;
   overflow-y: auto;
 }
 </style>
