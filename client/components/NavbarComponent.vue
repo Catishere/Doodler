@@ -1,5 +1,10 @@
 <template>
-  <b-navbar class="nav-container" toggleable="lg" type="dark" variant="info">
+  <b-navbar
+    class="nav-container"
+    toggleable="lg"
+    type="dark"
+    variant="secondary"
+  >
     <b-navbar-brand href="#">Доодлер</b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
