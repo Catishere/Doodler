@@ -45,6 +45,7 @@
         v-show="showSettings"
         @close="showSettings = false"
         @keyboard-changed="(value) => changeKeyboard(value)"
+        @hardmode-changed="(value) => changeHardmode(value)"
       />
     </transition>
   </div>
@@ -71,6 +72,7 @@ export default class WordleGame extends Vue {
   id: string = '';
   rowAnimations: string[] = ['', '', '', '', '', ''];
   isChecking: boolean = false;
+  isHardmode: boolean = false;
   isWrongKeyboardDisplayed: boolean = false;
   showStats: boolean = false;
   showSettings: boolean = false;
@@ -122,6 +124,10 @@ export default class WordleGame extends Vue {
 
   changeKeyboard(value: string) {
     this.keyboardType = value;
+  }
+
+  changeHardmode(value: boolean) {
+    this.isHardmode = value;
   }
 
   shareResults() {
@@ -279,6 +285,9 @@ export default class WordleGame extends Vue {
       this.isChecking = true;
 
       const rowCopy = this.row;
+
+      // if (this.isHardmode) {
+      // }
 
       let response = await this.guess();
 

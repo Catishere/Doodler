@@ -9,39 +9,92 @@
         </div>
         <div class="container">
           <h1>Настройки</h1>
-          <b-form-group label="Подредба на клавиатурата:">
-            <b-form-radio-group
-              id="keyboard-radios"
-              v-model="selected"
-              :options="options"
-              name="radios-btn-default"
-              buttons
-              @change="$emit('keyboard-changed', selected)"
-            ></b-form-radio-group>
-          </b-form-group>
+          <div class="settings">
+            <div class="setting">
+              <div class="setting-title">Клавиатура:</div>
+              <b-form-group class="setting-control">
+                <b-form-radio-group
+                  id="keyboard-radios"
+                  v-model="layoutSelected"
+                  :class="ctrlSize"
+                  :options="layoutOptions"
+                  name="radios-btn-default"
+                  buttons
+                  @change="$emit('keyboard-changed', layoutSelected)"
+                />
+              </b-form-group>
+            </div>
+            <div class="setting">
+              <div class="setting-title">Искам да ми е трудно:</div>
+              <b-form-checkbox
+                v-model="isHardmode"
+                class="setting-control"
+                name="check-button"
+                size="lg"
+                switch
+              />
+            </div>
+            <div class="setting">
+              <div class="setting-title">Не различавам цветове:</div>
+              <b-form-checkbox
+                v-model="isColorblind"
+                class="setting-control"
+                name="check-button"
+                size="lg"
+                switch
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Emit } from 'nuxt-property-decorator';
+import { Component, Vue, Emit, Watch } from 'nuxt-property-decorator';
 import { BFormGroup, BFormRadioGroup, BIconXCircle } from 'bootstrap-vue';
 
 @Component({
   components: { BFormGroup, BFormRadioGroup, BIconXCircle }
 })
 export default class WordleSettingsWindow extends Vue {
-  selected: string = 'phonetic';
-  options = [
+  layoutSelected: string = 'phonetic';
+  ctrlSize: string = '';
+  isHardmode: boolean = false;
+  isColorblind: boolean = false;
+
+  layoutOptions = [
     { text: 'БГР', value: 'phonetic' },
     { text: 'АБВ', value: 'alphabet' },
     { text: 'БДС', value: 'bulstand' }
   ];
 
+  beforeMount() {
+    if (window.innerWidth < 340) this.ctrlSize = 'btn-group-sm';
+  }
+
   @Emit()
   close() {
     return false;
+  }
+
+  @Watch('isColorblind')
+  onColorblindChanged() {
+    const root = document.querySelector(':root') as HTMLElement;
+    if (!root) return;
+
+    if (this.isColorblind) {
+      root.style.setProperty('--color-correct', 'var(--orange)');
+      root.style.setProperty('--color-present', 'var(--blue)');
+    } else {
+      root.style.setProperty('--color-correct', 'var(--green)');
+      root.style.setProperty('--color-present', 'var(--darkendYellow)');
+    }
+  }
+
+  @Watch('isHardmode')
+  onHardmodeChange() {
+    this.$emit('hardmode-changed', this.isHardmode);
   }
 
   closeIf(event: MouseEvent) {
@@ -54,6 +107,33 @@ export default class WordleSettingsWindow extends Vue {
 <style scoped>
 .top-bar {
   margin: 5px;
+}
+
+.settings {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.setting {
+  margin-top: 10px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.setting-title {
+  display: flex;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.setting-control {
+  display: flex;
 }
 
 .overlay {

@@ -128,10 +128,10 @@ export default class WordleKeyboard extends Vue {
 }
 
 .correct {
-  background-color: #538d4e;
+  background-color: var(--color-correct);
 }
 .present {
-  background-color: #b59f3b;
+  background-color: var(--color-present);
 }
 .absent {
   background-color: #3a3a3c;

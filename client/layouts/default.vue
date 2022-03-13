@@ -5,6 +5,23 @@
 </template>
 
 <style>
+:root {
+  --green: #6aaa64;
+  --darkendGreen: #538d4e;
+  --yellow: #c9b458;
+  --darkendYellow: #b59f3b;
+  --orange: #f5793a;
+  --blue: #85c0f9;
+  --color-present: var(--darkendYellow);
+  --color-correct: var(--green);
+  --color-tone-1: #ffffff;
+  --color-tone-2: #818384;
+  --color-tone-3: #565758;
+  --color-tone-4: #3a3a3c;
+  --color-tone-5: #272729;
+  --color-tone-6: #1a1a1b;
+}
+
 .app {
   text-align: center;
   color: #919191;
@@ -20,6 +37,18 @@
 body {
   position: fixed;
   overflow: hidden;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  color: #fff;
+  border-color: var(--color-correct);
+  background-color: var(--color-correct);
+}
+
+.custom-control-input ~ .custom-control-label::before {
+  color: #fff;
+  border-color: var(--color-tone-7);
+  background-color: var(--color-tone-7);
 }
 
 html {

@@ -25,15 +25,6 @@ export default {
 </script>
 
 <style scoped>
-:root {
-  --color-tone-1: #ffffff;
-  --color-tone-2: #818384;
-  --color-tone-3: #565758;
-  --color-tone-4: #3a3a3c;
-  --color-tone-5: #272729;
-  --color-tone-6: #1a1a1b;
-}
-
 .tile {
   background-color: transparent;
   display: inline-flex;
@@ -77,10 +68,10 @@ export default {
   color: var(--color-tone-1);
 }
 .tile[data-state='correct'] {
-  background-color: #538d4e;
+  background-color: var(--color-correct);
 }
 .tile[data-state='present'] {
-  background-color: #b59f3b;
+  background-color: var(--color-present);
 }
 .tile[data-state='absent'] {
   background-color: #3a3a3c;
