@@ -5,9 +5,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'nuxt-property-decorator';
-import { Prop } from 'vue-property-decorator';
-import Vue from 'vue/types/umd';
+import { Prop, Component, Vue } from 'nuxt-property-decorator';
 
 @Component({})
 export default class WordleLetter extends Vue {
