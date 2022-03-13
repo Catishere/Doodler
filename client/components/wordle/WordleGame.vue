@@ -1,7 +1,9 @@
 <template>
   <div class="game-container">
     <div class="buttons">
-      <button class="btn btn-dark" @click="fetchNewWord()">Нова дума</button>
+      <button class="btn btn-dark" @click="fetchNewWord($event)">
+        Нова дума
+      </button>
       <button class="btn btn-dark" @click="showStats = true">
         <b-icon-bar-chart-fill />
       </button>
@@ -173,23 +175,21 @@ export default class WordleGame extends Vue {
     ]);
   }
 
-  async fetchNewWord() {
+  async fetchNewWord($event?: Event) {
+    ($event?.target as HTMLButtonElement).blur();
     this.isWin = false;
     this.showStats = false;
     localStorage.removeItem('game-info');
     try {
-      this.setWordKey(
-        await this.$axios.$get('/api/word/random', {
-          params: {
-            _id: this.id
-          }
-        })
-      );
-      localStorage.setItem('wordle-word', JSON.stringify(this.wordKey));
+      const wordKey = await this.$axios.$get('/api/word/random', {
+        params: {
+          _id: this.id
+        }
+      });
+      this.setWordKey(wordKey);
+      localStorage.setItem('wordle-word', JSON.stringify(wordKey));
       this.clearBoard();
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) {}
   }
 
   saveBoard() {
