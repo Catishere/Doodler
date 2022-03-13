@@ -9,7 +9,7 @@ const config = async () => ({
   loading: false,
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Doodler',
+    title: 'Доодлер',
     htmlAttrs: {
       lang: 'en'
     },
