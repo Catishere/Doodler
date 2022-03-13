@@ -286,6 +286,7 @@ export default class WordleGame extends Vue {
         if (response.error !== 'EXPIRED') {
           this.shakeRow(this.row);
           this.showToaster(response.error);
+          this.isChecking = false;
           return;
         }
         localStorage.setItem(
@@ -296,6 +297,7 @@ export default class WordleGame extends Vue {
         if (this.row > 0) {
           this.showToaster('Опа');
           this.clearBoard();
+          this.isChecking = false;
           return;
         }
       }
