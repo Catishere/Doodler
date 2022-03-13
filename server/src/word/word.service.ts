@@ -82,6 +82,8 @@ export class WordService {
       }
     });
 
+    if (user.guesses === 6)
+      return new GuessWordSuccessDto(resultArray, decrypted);
     return new GuessWordSuccessDto(resultArray);
   }
 

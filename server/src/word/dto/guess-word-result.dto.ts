@@ -1,9 +1,11 @@
 export class GuessWordSuccessDto {
   ok: boolean = true;
   data?: string[];
+  additional?: string;
 
-  constructor(data?: string[]) {
+  constructor(data?: string[], additional?: string) {
     this.data = data;
+    this.additional = additional;
   }
 }
 

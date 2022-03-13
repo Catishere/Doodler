@@ -309,7 +309,9 @@ export default class WordleGame extends Vue {
       });
 
       this.isWin = result.every((el: string) => el === 'correct');
+
       if (this.isWin || rowCopy >= 5) {
+        this.stats.actualWord = response.additional;
         this.saveStats();
         this.showStats = true;
       }

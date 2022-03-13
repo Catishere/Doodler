@@ -10,6 +10,10 @@
         <div class="container">
           <h1>Статистика</h1>
           <h5 v-if="stats.success">Браво!</h5>
+          <h5 v-else-if="stats.actualWord">
+            Този път не позна. Думата беше
+            {{ stats.actualWord.toUpperCase() }}!
+          </h5>
           <div class="stat-boxes">
             <div class="stats-pair">
               <div class="stat-box">
@@ -135,6 +139,12 @@ export default class WordleEndWindow extends Vue {
 @media screen and (min-width: 768px) {
   .stats-pair {
     flex-wrap: nowrap;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .window-container {
+    height: 600px !important;
   }
 }
 

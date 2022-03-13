@@ -6,6 +6,7 @@ interface WordStats {
   solves: number[]; // number of solves per level
   lastTry: number; // timestamp of last try
   success: boolean; // whether the last try was successful
+  actualWord: string; // actual word
 }
 
 export default WordStats;
