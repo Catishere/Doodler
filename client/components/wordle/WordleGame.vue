@@ -43,8 +43,18 @@ import { Component, Vue } from 'nuxt-property-decorator';
 import { BIconBarChartFill } from 'bootstrap-vue';
 import { getWordsModule } from '../../store';
 import WordStats from '../../types/word-stats.type';
+import WordleKeyboard from './WordleKeyboard.vue';
+import WordleLetter from './WordleLetter.vue';
+import WordleEndWindow from './WordleEndWindow.vue';
 
-@Component({ components: { BIconBarChartFill } })
+@Component({
+  components: {
+    BIconBarChartFill,
+    WordleKeyboard,
+    WordleEndWindow,
+    WordleLetter
+  }
+})
 export default class WordleGame extends Vue {
   [x: string]: any;
   id: string = '';
@@ -218,6 +228,7 @@ export default class WordleGame extends Vue {
 
   async onKeyPress(event: KeyboardEvent) {
     if (this.isWin) return;
+    if (this.isChecking) return;
     if (
       event.key >= 'a' &&
       event.key <= 'z' &&
@@ -241,10 +252,7 @@ export default class WordleGame extends Vue {
       }, 200);
       this.addLetter(event.key);
       this.incrementCol();
-    } else if (
-      (event.key === 'Enter' || event.key === '↵') &&
-      this.isChecking === false
-    ) {
+    } else if (event.key === 'Enter' || event.key === '↵') {
       if (this.col !== 5) {
         this.shakeRow(this.row);
         this.showToaster('Недостатъчно букви');
@@ -252,6 +260,7 @@ export default class WordleGame extends Vue {
       }
 
       this.isChecking = true;
+
       const rowCopy = this.row;
 
       setTimeout(() => {
@@ -290,6 +299,7 @@ export default class WordleGame extends Vue {
 
       this.incrementRow();
       this.setCol(0);
+
       setTimeout(() => {
         this.saveBoard();
       }, 2500);

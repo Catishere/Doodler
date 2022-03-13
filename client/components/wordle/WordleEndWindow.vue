@@ -60,11 +60,11 @@
 </template>
 <script lang="ts">
 import { Prop, Component, Vue, Emit } from 'nuxt-property-decorator';
-import { BIconShareFill, BIconXCircle } from 'bootstrap-vue';
+import { BIconShareFill, BIconXCircle, BProgress } from 'bootstrap-vue';
 import WordStats from '@/client/types/word-stats.type';
 
 @Component({
-  components: { BIconShareFill, BIconXCircle }
+  components: { BIconShareFill, BIconXCircle, BProgress }
 })
 export default class WordleEndWindow extends Vue {
   @Prop({ default: {} })
