@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay" @click="close()">
+  <div class="overlay" @click="closeIf($event)">
     <div class="window-container">
       <div class="scrollable">
         <div class="top-bar">
@@ -73,6 +73,11 @@ export default class WordleEndWindow extends Vue {
   @Emit()
   close() {
     return false;
+  }
+
+  closeIf(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('overlay'))
+      this.close();
   }
 
   @Emit()

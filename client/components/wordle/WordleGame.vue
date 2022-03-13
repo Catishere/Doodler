@@ -5,6 +5,9 @@
       <button class="btn btn-dark" @click="showStats = true">
         <b-icon-bar-chart-fill />
       </button>
+      <button class="btn btn-dark" @click="showSettings = true">
+        <b-icon-gear-fill />
+      </button>
     </div>
     <div id="grid" class="grid">
       <div
@@ -26,6 +29,7 @@
       :words="words"
       :state="states"
       :render="updateKeyboard"
+      :type="keyboardType"
       @keyboard-press="(key) => onKeyPress(key)"
     />
     <transition name="fade" mode="">
@@ -36,11 +40,18 @@
         @close="showStats = false"
       />
     </transition>
+    <transition name="fade" mode="">
+      <wordle-settings-window
+        v-show="showSettings"
+        @close="showSettings = false"
+        @keyboard-changed="(value) => changeKeyboard(value)"
+      />
+    </transition>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
-import { BIconBarChartFill } from 'bootstrap-vue';
+import { BIconBarChartFill, BIconGearFill } from 'bootstrap-vue';
 import { getWordsModule } from '../../store';
 import WordStats from '../../types/word-stats.type';
 import WordleKeyboard from './WordleKeyboard.vue';
@@ -50,20 +61,22 @@ import WordleEndWindow from './WordleEndWindow.vue';
 @Component({
   components: {
     BIconBarChartFill,
+    BIconGearFill,
     WordleKeyboard,
     WordleEndWindow,
     WordleLetter
   }
 })
 export default class WordleGame extends Vue {
-  [x: string]: any;
   id: string = '';
   rowAnimations: string[] = ['', '', '', '', '', ''];
   isChecking: boolean = false;
   isWrongKeyboardDisplayed: boolean = false;
   showStats: boolean = false;
+  showSettings: boolean = false;
   isWin: boolean = false;
   updateKeyboard: boolean = false;
+  keyboardType: string = 'phonetic';
   stats: WordStats = {} as WordStats;
 
   mounted() {
@@ -105,6 +118,10 @@ export default class WordleGame extends Vue {
     el.style.width =
       Math.min(window.innerWidth - 20, window.innerHeight * factor - 274) +
       'px';
+  }
+
+  changeKeyboard(value: string) {
+    this.keyboardType = value;
   }
 
   shareResults() {

@@ -22,52 +22,73 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  name: 'WordleKeyboard',
-  props: {
-    words: {
-      type: Array,
-      default() {
-        return [];
-      }
-    },
-    state: {
-      type: Array,
-      default() {
-        return [];
-      }
-    },
-    render: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      keyboard: [
-        ['я', 'в', 'е', 'р', 'т', 'ъ', 'у', 'и', 'о', 'п', 'ч'],
-        ['а', 'с', 'д', 'ф', 'г', 'х', 'й', 'к', 'л', 'ш', 'щ'],
-        ['↵', 'з', 'ь', 'ц', 'ж', 'б', 'н', 'м', 'ю', '⌫']
-      ]
-    };
-  },
-  methods: {
-    resolveType(letter) {
-      let type = '';
-      const flatWords = this.words.flat();
-      const flatState = this.state.flat();
-      for (let i = 0; i < flatWords.length; i++) {
-        if (flatWords[i] === letter) {
-          if (flatState[i] === 'correct') return 'correct';
-          if (flatState[i] === 'present') type = 'present';
-          if (flatState[i] === 'absent' && type !== 'present') type = 'absent';
-        }
-      }
-      return type;
-    }
+<script lang="ts">
+import { Prop, Component, Vue, Watch } from 'nuxt-property-decorator';
+import {
+  KeyboardLayouts,
+  IIndexable
+} from 'client/types/keyboard-layouts.type';
+
+@Component({})
+export default class WordleKeyboard extends Vue {
+  @Prop({ default: [] })
+  words!: String[][];
+
+  @Prop({ default: [] })
+  state!: String[][];
+
+  @Prop({ default: false })
+  render!: boolean;
+
+  @Prop({ default: 'phonetic' })
+  type!: boolean;
+
+  keyboardLayouts: KeyboardLayouts = {
+    phonetic: [
+      ['я', 'в', 'е', 'р', 'т', 'ъ', 'у', 'и', 'о', 'п', 'ч'],
+      ['а', 'с', 'д', 'ф', 'г', 'х', 'й', 'к', 'л', 'ш', 'щ'],
+      ['↵', 'з', 'ь', 'ц', 'ж', 'б', 'н', 'м', 'ю', '⌫']
+    ],
+    alphabet: [
+      ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к'],
+      ['л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х'],
+      ['↵', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ь', 'ю', 'я', '⌫']
+    ],
+    bulstand: [
+      ['у', 'е', 'и', 'ш', 'щ', 'к', 'с', 'д', 'з', 'ц', 'б'],
+      ['ь', 'я', 'а', 'о', 'ж', 'г', 'т', 'н', 'в', 'м', 'ч'],
+      ['↵', 'ю', 'й', 'ъ', 'ф', 'х', 'п', 'р', 'л', '⌫']
+    ]
+  };
+
+  keyboard = this.keyboardLayouts.phonetic;
+
+  beforeMount() {
+    const type = localStorage.getItem('wordle-keyboard') || 'phonetic';
+    this.keyboard = (this.keyboardLayouts as IIndexable)[type];
   }
-};
+
+  @Watch('type')
+  onTypeChange(newValue: string) {
+    newValue ||= 'phonetic';
+    localStorage.setItem('wordle-keyboard', newValue);
+    this.keyboard = (this.keyboardLayouts as IIndexable)[newValue];
+  }
+
+  resolveType(letter: string) {
+    let type = '';
+    const flatWords = this.words.flat();
+    const flatState = this.state.flat();
+    for (let i = 0; i < flatWords.length; i++) {
+      if (flatWords[i] === letter) {
+        if (flatState[i] === 'correct') return 'correct';
+        if (flatState[i] === 'present') type = 'present';
+        if (flatState[i] === 'absent' && type !== 'present') type = 'absent';
+      }
+    }
+    return type;
+  }
+}
 </script>
 
 <style scoped>
