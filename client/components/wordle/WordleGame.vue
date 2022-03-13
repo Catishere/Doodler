@@ -280,10 +280,6 @@ export default class WordleGame extends Vue {
 
       const rowCopy = this.row;
 
-      setTimeout(() => {
-        this.isChecking = false;
-      }, 500);
-
       let response = await this.guess();
 
       if (response.error !== undefined) {
@@ -318,6 +314,10 @@ export default class WordleGame extends Vue {
 
       this.incrementRow();
       this.setCol(0);
+
+      setTimeout(() => {
+        this.isChecking = false;
+      }, 500);
 
       setTimeout(() => {
         this.saveBoard();
