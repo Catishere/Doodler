@@ -3,25 +3,23 @@
     {{ letter }}
   </div>
 </template>
-<script>
-export default {
-  name: 'WordleLetter',
-  props: {
-    letter: {
-      type: String,
-      default: ' '
-    },
-    state: {
-      type: String,
-      default: ' '
-    },
-    animation: {
-      type: String,
-      default: ' '
-    }
-  },
-  methods: {}
-};
+
+<script lang="ts">
+import { Component } from 'nuxt-property-decorator';
+import { Prop } from 'vue-property-decorator';
+import Vue from 'vue/types/umd';
+
+@Component({})
+export default class WordleLetter extends Vue {
+  @Prop({ default: ' ' })
+  letter!: string;
+
+  @Prop({ default: ' ' })
+  animation!: string;
+
+  @Prop({ default: ' ' })
+  state!: string;
+}
 </script>
 
 <style scoped>
