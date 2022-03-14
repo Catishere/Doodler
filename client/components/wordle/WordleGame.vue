@@ -90,6 +90,9 @@ export default class WordleGame extends Vue {
   mounted() {
     this.onResize();
     this.loadStats();
+  }
+
+  async beforeMount() {
     if (localStorage.getItem('game-info')) {
       this.loadBoard();
       const currRow = this.row === 0 ? 0 : this.row - 1;
@@ -98,9 +101,6 @@ export default class WordleGame extends Vue {
         this.showStats = this.isWin || currRow >= 5;
       }, 500);
     }
-  }
-
-  async beforeMount() {
     if (localStorage.getItem('wordle-id')) {
       this.id = localStorage.getItem('wordle-id') ?? '';
     } else {

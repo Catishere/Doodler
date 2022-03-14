@@ -11,7 +11,7 @@
           <h1>Настройки</h1>
           <div class="settings">
             <div class="setting">
-              <div class="setting-title">Клавиатура:</div>
+              <div id="keyboard-label" class="setting-title">Клавиатура:</div>
               <b-form-group class="setting-control">
                 <b-form-radio-group
                   id="keyboard-radios"
@@ -24,7 +24,9 @@
               </b-form-group>
             </div>
             <div class="setting">
-              <div class="setting-title">Искам да ми е трудно:</div>
+              <div id="hardmode-label" class="setting-title">
+                Искам да ми е трудно:
+              </div>
               <b-form-checkbox
                 v-model="isHardmode"
                 class="setting-control"
@@ -34,7 +36,9 @@
               />
             </div>
             <div class="setting">
-              <div class="setting-title">Не различавам цветове:</div>
+              <div id="colorblind-label" class="setting-title">
+                Не различавам цветове:
+              </div>
               <b-form-checkbox
                 v-model="isColorblind"
                 class="setting-control"
@@ -44,7 +48,9 @@
               />
             </div>
             <div class="setting">
-              <div class="setting-title">Буквите да се цъкат:</div>
+              <div id="letindex-label" class="setting-title">
+                Буквите да се цъкат:
+              </div>
               <b-form-checkbox
                 v-model="isLetterIndexable"
                 class="setting-control"
@@ -54,6 +60,19 @@
               />
             </div>
           </div>
+          <b-tooltip target="keyboard-label" triggers="hover">
+            Подреба на клавиатурата
+          </b-tooltip>
+          <b-tooltip target="hardmode-label" triggers="hover">
+            Всяка подсказка трябва да се използва в следващите опити
+          </b-tooltip>
+          <b-tooltip target="colorblind-label" triggers="hover">
+            Цветовете са по-подходящи за хора с далтонизъм
+          </b-tooltip>
+          <b-tooltip target="letindex-label" triggers="hover">
+            Позволява натискането на квадратчетата за смяна на позицията на
+            писане
+          </b-tooltip>
         </div>
       </div>
     </div>
@@ -61,10 +80,15 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Emit, Watch } from 'nuxt-property-decorator';
-import { BFormGroup, BFormRadioGroup, BIconXCircle } from 'bootstrap-vue';
+import {
+  BFormGroup,
+  BFormRadioGroup,
+  BIconXCircle,
+  BTooltip
+} from 'bootstrap-vue';
 
 @Component({
-  components: { BFormGroup, BFormRadioGroup, BIconXCircle }
+  components: { BFormGroup, BFormRadioGroup, BIconXCircle, BTooltip }
 })
 export default class WordleSettingsWindow extends Vue {
   layoutSelected: string = 'phonetic';
