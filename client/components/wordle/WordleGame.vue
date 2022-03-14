@@ -24,6 +24,7 @@
           :state="states[row_id][letter_id]"
           :animation="animations[row_id][letter_id]"
           :letter="letter"
+          @clicked="letterClicked(row_id, letter_id)"
         />
       </div>
     </div>
@@ -75,6 +76,7 @@ export default class WordleGame extends Vue {
   rowAnimations: string[] = ['', '', '', '', '', ''];
   isChecking: boolean = false;
   isHardmode: boolean = false;
+  isColMoved: boolean = false;
   isWrongKeyboardDisplayed: boolean = false;
   showStats: boolean = false;
   showSettings: boolean = false;
@@ -122,6 +124,19 @@ export default class WordleGame extends Vue {
     el.style.width =
       Math.min(window.innerWidth - 20, window.innerHeight * factor - 274) +
       'px';
+  }
+
+  letterClicked(row: number, col: number) {
+    if (row === this.row) {
+      this.setCol(col);
+      this.animations[row][col] = 'pop';
+      this.setAnimations(this.animations.slice());
+      this.isColMoved = true;
+      setTimeout(() => {
+        this.animations[row][col] = ' ';
+        this.setAnimations(this.animations.slice());
+      }, 100);
+    }
   }
 
   changeKeyboard(value: string) {
@@ -275,15 +290,16 @@ export default class WordleGame extends Vue {
       }, 200);
       this.addLetter(event.key);
       this.incrementCol();
+      this.isColMoved = false;
     } else if (event.key === 'Enter' || event.key === '↵') {
-      if (this.col !== 5) {
+      if (!this.words[this.row].every((el) => el !== ' ')) {
         this.shakeRow(this.row);
         this.showToaster('Недостатъчно букви');
         return;
       }
 
       this.isChecking = true;
-
+      this.isColMoved = false;
       const rowCopy = this.row;
 
       // if (this.isHardmode) {
@@ -335,9 +351,12 @@ export default class WordleGame extends Vue {
       }, 2500);
     } else if (
       (event.key === 'Backspace' || event.key === '⌫') &&
-      this.col > 0 &&
+      this.col >= 0 &&
       this.row < 6
     ) {
+      if (!this.isColMoved && this.col === 0) return;
+      if (this.isColMoved) this.setCol(this.col + 1);
+      this.isColMoved = false;
       this.eraseLetter();
       this.incrementCol(-1);
     }

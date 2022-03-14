@@ -1,5 +1,10 @@
 <template>
-  <div class="tile" :data-state="state" :data-animation="animation">
+  <div
+    class="tile"
+    :data-state="state"
+    :data-animation="animation"
+    @click="clicked()"
+  >
     {{ letter }}
   </div>
 </template>
@@ -17,6 +22,12 @@ export default class WordleLetter extends Vue {
 
   @Prop({ default: ' ' })
   state!: string;
+
+  clicked() {
+    if (this.state === 'empty') {
+      this.$emit('clicked', this.letter);
+    }
+  }
 }
 </script>
 
