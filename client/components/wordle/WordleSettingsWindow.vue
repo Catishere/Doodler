@@ -20,7 +20,6 @@
                   :options="layoutOptions"
                   name="radios-btn-default"
                   buttons
-                  @change="$emit('keyboard-changed', layoutSelected)"
                 />
               </b-form-group>
             </div>
@@ -73,6 +72,12 @@ export default class WordleSettingsWindow extends Vue {
     if (window.innerWidth < 340) this.ctrlSize = 'btn-group-sm';
   }
 
+  mounted() {
+    this.layoutSelected = localStorage.getItem('wordle-keyboard') || 'phonetic';
+    this.isHardmode = localStorage.getItem('wordle-hardmode') === 'true';
+    this.isColorblind = localStorage.getItem('wordle-colorblind') === 'true';
+  }
+
   @Emit()
   close() {
     return false;
@@ -80,6 +85,7 @@ export default class WordleSettingsWindow extends Vue {
 
   @Watch('isColorblind')
   onColorblindChanged() {
+    localStorage.setItem('wordle-colorblind', this.isColorblind.toString());
     const root = document.querySelector(':root') as HTMLElement;
     if (!root) return;
 
@@ -94,7 +100,14 @@ export default class WordleSettingsWindow extends Vue {
 
   @Watch('isHardmode')
   onHardmodeChange() {
+    localStorage.setItem('wordle-hardmode', this.isHardmode.toString());
     this.$emit('hardmode-changed', this.isHardmode);
+  }
+
+  @Watch('layoutSelected')
+  onLayoutChange() {
+    localStorage.setItem('wordle-keyboard', this.layoutSelected);
+    this.$emit('keyboard-changed', this.layoutSelected);
   }
 
   closeIf(event: MouseEvent) {

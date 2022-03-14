@@ -71,7 +71,6 @@ export default class WordleKeyboard extends Vue {
   @Watch('type')
   onTypeChange(newValue: string) {
     newValue ||= 'phonetic';
-    localStorage.setItem('wordle-keyboard', newValue);
     this.keyboard = (this.keyboardLayouts as IIndexable)[newValue];
   }
 
