@@ -1,23 +1,24 @@
 <!-- Please remove this file from your project -->
 <template>
-  <div>
-    {{ data }}
-  </div>
+  <nuxt-link to="/wordle">
+    <b-button class="margin-top"> Към Думите </b-button>
+  </nuxt-link>
 </template>
 
 <script lang="ts">
+import { BButton } from 'bootstrap-vue';
 import { Component, Vue } from 'nuxt-property-decorator';
 
-@Component
+@Component({ components: { BButton } })
 export default class IndexView extends Vue {
-  data: string = '';
-  mounted() {
-    this.data = `${window.innerHeight} - ${window.innerWidth}`;
-  }
+  mounted() {}
 }
 </script>
 
 <style scoped>
+.margin-top {
+  margin-top: 1rem;
+}
 .index-view {
   display: flex;
   flex-direction: column;
