@@ -49,6 +49,7 @@
         @close="showSettings = false"
         @keyboard-changed="(value) => changeKeyboard(value)"
         @hardmode-changed="(value) => changeHardmode(value)"
+        @letindex-changed="(value) => changeLetterIndex(value)"
       />
     </transition>
   </div>
@@ -77,6 +78,7 @@ export default class WordleGame extends Vue {
   isChecking: boolean = false;
   isHardmode: boolean = false;
   isColMoved: boolean = false;
+  isLetterIndexable: boolean = false;
   isWrongKeyboardDisplayed: boolean = false;
   showStats: boolean = false;
   showSettings: boolean = false;
@@ -127,6 +129,7 @@ export default class WordleGame extends Vue {
   }
 
   letterClicked(row: number, col: number) {
+    if (!this.isLetterIndexable) return;
     if (row === this.row) {
       this.setCol(col);
       this.animations[row][col] = 'pop';
@@ -145,6 +148,10 @@ export default class WordleGame extends Vue {
 
   changeHardmode(value: boolean) {
     this.isHardmode = value;
+  }
+
+  changeLetterIndex(value: boolean) {
+    this.isLetterIndexable = value;
   }
 
   shareResults() {
@@ -302,8 +309,9 @@ export default class WordleGame extends Vue {
       this.isColMoved = false;
       const rowCopy = this.row;
 
-      // if (this.isHardmode) {
-      // }
+      if (this.isHardmode && !this.checkHardmode()) {
+        return;
+      }
 
       let response = await this.guess();
 
@@ -360,6 +368,30 @@ export default class WordleGame extends Vue {
       this.eraseLetter();
       this.incrementCol(-1);
     }
+  }
+
+  checkHardmode() {
+    for (let rowId = 0; rowId < this.words.length; rowId++) {
+      for (let colId = 0; colId < this.words.length; colId++) {
+        if (
+          this.states[rowId][colId] === 'correct' &&
+          this.words[this.row][colId] !== this.words[rowId][colId]
+        ) {
+          this.showToaster('Това не ми изглежда трудно');
+          this.isChecking = false;
+          return false;
+        }
+        if (
+          this.states[rowId][colId] === 'present' &&
+          !this.words[this.row].includes(this.words[rowId][colId])
+        ) {
+          this.showToaster('Това не ми изглежда трудно');
+          this.isChecking = false;
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   showToaster(message: string) {

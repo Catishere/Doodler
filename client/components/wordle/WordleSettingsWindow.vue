@@ -43,6 +43,16 @@
                 switch
               />
             </div>
+            <div class="setting">
+              <div class="setting-title">Буквите да се цъкат:</div>
+              <b-form-checkbox
+                v-model="isLetterIndexable"
+                class="setting-control"
+                name="check-button"
+                size="lg"
+                switch
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -61,6 +71,7 @@ export default class WordleSettingsWindow extends Vue {
   ctrlSize: string = '';
   isHardmode: boolean = false;
   isColorblind: boolean = false;
+  isLetterIndexable: boolean = false;
 
   layoutOptions = [
     { text: 'БГР', value: 'phonetic' },
@@ -76,6 +87,7 @@ export default class WordleSettingsWindow extends Vue {
     this.layoutSelected = localStorage.getItem('wordle-keyboard') || 'phonetic';
     this.isHardmode = localStorage.getItem('wordle-hardmode') === 'true';
     this.isColorblind = localStorage.getItem('wordle-colorblind') === 'true';
+    this.isLetterIndexable = localStorage.getItem('wordle-letindex') === 'true';
   }
 
   @Emit()
@@ -108,6 +120,12 @@ export default class WordleSettingsWindow extends Vue {
   onLayoutChange() {
     localStorage.setItem('wordle-keyboard', this.layoutSelected);
     this.$emit('keyboard-changed', this.layoutSelected);
+  }
+
+  @Watch('isLetterIndexable')
+  onLetterIndexableChange() {
+    localStorage.setItem('wordle-letindex', this.isLetterIndexable.toString());
+    this.$emit('letindex-changed', this.isLetterIndexable);
   }
 
   closeIf(event: MouseEvent) {
