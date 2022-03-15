@@ -150,10 +150,6 @@ export default class WordleSettingsWindow extends Vue {
 </script>
 
 <style scoped>
-.top-bar {
-  margin: 5px;
-}
-
 .settings {
   margin-top: 30px;
   display: flex;
@@ -179,38 +175,5 @@ export default class WordleSettingsWindow extends Vue {
 
 .setting-control {
   display: flex;
-}
-
-.overlay {
-  position: absolute;
-  margin: 0;
-  left: 0;
-  top: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.window-container {
-  display: relative;
-  width: 90%;
-  max-width: 500px;
-  height: 500px;
-  max-height: 80%;
-  padding-bottom: 20px;
-  border-radius: 15px;
-  background-color: rgb(41, 41, 41);
-}
-
-.scrollable {
-  width: 100%;
-  height: 100%;
-  margin: 10px 0px;
-  padding: 0 2%;
-  display: relative;
-  overflow-y: auto;
 }
 </style>

@@ -1,12 +1,10 @@
 <template>
   <div class="overlay" @click="closeIf($event)">
     <div class="window-container">
+      <div class="close" @click="close()">
+        <b-icon-x-circle style="color: white" />
+      </div>
       <div class="scrollable">
-        <div class="top-bar">
-          <div class="close" @click="close()">
-            <b-icon-x-circle style="color: white" />
-          </div>
-        </div>
         <div class="container">
           <slot></slot>
         </div>
@@ -34,10 +32,6 @@ export default class WordleModalWindow extends Vue {
 </script>
 
 <style scoped>
-.top-bar {
-  margin: 5px;
-}
-
 .overlay {
   position: absolute;
   margin: 0;
@@ -52,22 +46,31 @@ export default class WordleModalWindow extends Vue {
   background-color: rgba(0, 0, 0, 0.5);
 }
 .window-container {
-  display: relative;
+  position: relative;
+  display: block;
   width: 90%;
   max-width: 500px;
   height: 500px;
-  max-height: 80%;
-  padding-bottom: 20px;
+  max-height: 85%;
+  padding: 2% 2%;
   border-radius: 15px;
   background-color: rgb(41, 41, 41);
 }
 
+@media screen and (max-width: 767px) {
+  .window-container {
+    height: 600px !important;
+  }
+}
+
+.close {
+  height: 5%;
+}
+
 .scrollable {
   width: 100%;
-  height: 100%;
-  margin: 10px 0px;
-  padding: 0 2%;
-  display: relative;
+  height: 91%;
+  display: block;
   overflow-y: auto;
 }
 </style>

@@ -82,10 +82,6 @@ export default class WordleEndWindow extends Vue {
 </script>
 
 <style scoped>
-.top-bar {
-  margin: 5px;
-}
-
 .graph {
   margin: 20px 0;
 }
@@ -132,12 +128,6 @@ export default class WordleEndWindow extends Vue {
   }
 }
 
-@media screen and (max-width: 767px) {
-  .window-container {
-    height: 600px !important;
-  }
-}
-
 .stat-box {
   flex-basis: 100%;
   flex-grow: 1;
@@ -159,38 +149,5 @@ export default class WordleEndWindow extends Vue {
 .stat-box-value {
   font-size: 1.5rem;
   font-weight: bold;
-}
-
-.overlay {
-  position: absolute;
-  margin: 0;
-  left: 0;
-  top: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.window-container {
-  display: relative;
-  width: 90%;
-  max-width: 500px;
-  height: 500px;
-  max-height: 80%;
-  padding-bottom: 20px;
-  border-radius: 15px;
-  background-color: rgb(41, 41, 41);
-}
-
-.scrollable {
-  width: 100%;
-  height: 100%;
-  margin: 10px 0px;
-  padding: 0 2%;
-  display: relative;
-  overflow-y: auto;
 }
 </style>
