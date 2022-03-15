@@ -21,7 +21,9 @@ const config = async () => ({
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
 
-  serverMiddleware: isDev ? [] : [{ path: '/api', handler: await bootstrap() }],
+  serverMiddleware: isDev
+    ? []
+    : ['redirect-ssl', { path: '/api', handler: await bootstrap() }],
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [],
