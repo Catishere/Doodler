@@ -177,9 +177,7 @@ export default class WordleGame extends Vue {
     this.showToaster('Копирано!');
   }
 
-  clearBoard() {
-    this.setRow(0);
-    this.setCol(0);
+  clearStates() {
     this.setStates([
       ['empty', 'empty', 'empty', 'empty', 'empty'],
       ['empty', 'empty', 'empty', 'empty', 'empty'],
@@ -188,6 +186,12 @@ export default class WordleGame extends Vue {
       ['empty', 'empty', 'empty', 'empty', 'empty'],
       ['empty', 'empty', 'empty', 'empty', 'empty']
     ]);
+  }
+
+  clearBoard() {
+    this.setRow(0);
+    this.setCol(0);
+    this.clearStates();
     this.setWords([
       [' ', ' ', ' ', ' ', ' '],
       [' ', ' ', ' ', ' ', ' '],
@@ -216,6 +220,9 @@ export default class WordleGame extends Vue {
   }
 
   saveBoard() {
+    this.words.forEach((row, rowId) => {
+      if (row.includes(' ')) this.words[rowId] = [' ', ' ', ' ', ' ', ' '];
+    });
     localStorage.setItem(
       'game-info',
       JSON.stringify({
@@ -239,11 +246,25 @@ export default class WordleGame extends Vue {
     localStorage.setItem('wordle-stat', JSON.stringify(this.stats));
   }
 
+  flipAllLetters(states: string[][]) {
+    for (let row = 0; row < this.row; row++) {
+      this.words[row].forEach((_c, col) => {
+        this.delayedFlipInOut({
+          row,
+          col,
+          result: states[row][col],
+          delay: 125
+        });
+      });
+    }
+  }
+
   loadBoard() {
     const gameInfo = JSON.parse(localStorage.getItem('game-info') ?? '{}');
     this.setRow(gameInfo.row);
     this.setWords(gameInfo.words);
-    this.setStates(gameInfo.states);
+    this.clearStates();
+    this.flipAllLetters(gameInfo.states);
   }
 
   loadStats() {
@@ -353,11 +374,8 @@ export default class WordleGame extends Vue {
 
       setTimeout(() => {
         this.isChecking = false;
-      }, 500);
-
-      setTimeout(() => {
         this.saveBoard();
-      }, 2500);
+      }, 1500);
     } else if (
       (event.key === 'Backspace' || event.key === '⌫') &&
       this.col >= 0 &&
@@ -492,6 +510,15 @@ export default class WordleGame extends Vue {
 
   flipInOut(data: { row: number; col: number; result: string }): void {
     getWordsModule(this.$store).flipInOut(data);
+  }
+
+  delayedFlipInOut(data: {
+    row: number;
+    col: number;
+    result: string;
+    delay: number;
+  }): void {
+    getWordsModule(this.$store).delayedFlipInOut(data);
   }
 }
 </script>

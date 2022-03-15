@@ -84,6 +84,7 @@ export default class WordsModule extends VuexModule {
   @Mutation
   eraseLetter(): void {
     this.words_[this.row_].splice(this.col_ - 1, 1, ' ');
+    this.words_ = this.words_.slice();
   }
 
   @Mutation
@@ -149,8 +150,18 @@ export default class WordsModule extends VuexModule {
 
   @Action({ rawError: true })
   flipInOut(data: { row: number; col: number; result: string }): Promise<void> {
+    return this.delayedFlipInOut({ ...data, delay: 300 });
+  }
+
+  @Action({ rawError: true })
+  delayedFlipInOut(data: {
+    row: number;
+    col: number;
+    result: string;
+    delay: number;
+  }): Promise<void> {
     return new Promise<void>((resolve) => {
-      const { row, col, result } = data;
+      const { row, col, result, delay } = data;
       setTimeout(() => {
         this.animations_[row][col] = 'flip-in';
         this.context.commit('setAnimations', this.animations_.slice());
@@ -171,7 +182,7 @@ export default class WordsModule extends VuexModule {
             resolve();
           }, 150);
         }, 150);
-      }, 300 * col);
+      }, delay * col);
     });
   }
 }
