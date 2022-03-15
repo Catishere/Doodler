@@ -1,74 +1,64 @@
 <template>
-  <div class="overlay" @click="closeIf($event)">
-    <div class="window-container">
-      <div class="scrollable">
-        <div class="top-bar">
-          <div class="close" @click="close()">
-            <b-icon-x-circle style="color: white" />
-          </div>
+  <wordle-modal-window @close="close()">
+    <h1>Статистика</h1>
+    <h5 v-if="stats.success">Браво!</h5>
+    <h5 v-else-if="stats.actualWord">
+      Този път не позна. Думата беше
+      {{ stats.actualWord.toUpperCase() }}!
+    </h5>
+    <div class="stat-boxes">
+      <div class="stats-pair">
+        <div class="stat-box">
+          <div class="stat-box-value">{{ stats.games }}</div>
+          <div class="stat-box-title">Игри</div>
         </div>
-        <div class="container">
-          <h1>Статистика</h1>
-          <h5 v-if="stats.success">Браво!</h5>
-          <h5 v-else-if="stats.actualWord">
-            Този път не позна. Думата беше
-            {{ stats.actualWord.toUpperCase() }}!
-          </h5>
-          <div class="stat-boxes">
-            <div class="stats-pair">
-              <div class="stat-box">
-                <div class="stat-box-value">{{ stats.games }}</div>
-                <div class="stat-box-title">Игри</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-box-value">
-                  {{ Math.round((stats.wins / stats.games) * 100) }}
-                </div>
-                <div class="stat-box-title">% Победи</div>
-              </div>
-            </div>
-            <div class="stats-pair">
-              <div class="stat-box">
-                <div class="stat-box-value">{{ stats.streak }}</div>
-                <div class="stat-box-title">Победи подред</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-box-value">{{ stats.maxStreak }}</div>
-                <div class="stat-box-title">Рекорд</div>
-              </div>
-            </div>
+        <div class="stat-box">
+          <div class="stat-box-value">
+            {{ Math.round((stats.wins / stats.games) * 100) }}
           </div>
-          <div v-if="stats.games > 0" class="graph">
-            <div
-              v-for="(solve, i) in stats.solves"
-              :key="'solve-' + i"
-              class="graph-item"
-            >
-              <div class="graph-item-number">{{ i + 1 }}</div>
-              <b-progress
-                :value="solve"
-                :variant="stats.lastTry == i ? 'success' : 'secondary'"
-                :max="Math.max(...stats.solves)"
-                show-value
-              />
-            </div>
-          </div>
-          <button v-if="stats.success" class="btn btn-dark" @click="copy()">
-            <b-icon-share-fill />
-            Сподели
-          </button>
+          <div class="stat-box-title">% Победи</div>
+        </div>
+      </div>
+      <div class="stats-pair">
+        <div class="stat-box">
+          <div class="stat-box-value">{{ stats.streak }}</div>
+          <div class="stat-box-title">Победи подред</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-value">{{ stats.maxStreak }}</div>
+          <div class="stat-box-title">Рекорд</div>
         </div>
       </div>
     </div>
-  </div>
+    <div v-if="stats.games > 0" class="graph">
+      <div
+        v-for="(solve, i) in stats.solves"
+        :key="'solve-' + i"
+        class="graph-item"
+      >
+        <div class="graph-item-number">{{ i + 1 }}</div>
+        <b-progress
+          :value="solve"
+          :variant="stats.lastTry == i ? 'success' : 'secondary'"
+          :max="Math.max(...stats.solves)"
+          show-value
+        />
+      </div>
+    </div>
+    <button v-if="stats.success" class="btn btn-dark" @click="copy()">
+      <b-icon-share-fill />
+      Сподели
+    </button>
+  </wordle-modal-window>
 </template>
 <script lang="ts">
 import { Prop, Component, Vue, Emit } from 'nuxt-property-decorator';
 import { BIconShareFill, BIconXCircle, BProgress } from 'bootstrap-vue';
+import WordleModalWindow from './WordleModalWindow.vue';
 import WordStats from '@/client/types/word-stats.type';
 
 @Component({
-  components: { BIconShareFill, BIconXCircle, BProgress }
+  components: { BIconShareFill, BIconXCircle, BProgress, WordleModalWindow }
 })
 export default class WordleEndWindow extends Vue {
   @Prop({ default: {} })

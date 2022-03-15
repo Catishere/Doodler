@@ -1,82 +1,70 @@
 <template>
-  <div class="overlay" @click="closeIf($event)">
-    <div class="window-container">
-      <div class="scrollable">
-        <div class="top-bar">
-          <div class="close" @click="close()">
-            <b-icon-x-circle style="color: white" />
-          </div>
+  <wordle-modal-window @close="close()">
+    <h1>Настройки</h1>
+    <div class="settings">
+      <div class="setting">
+        <div id="keyboard-label" class="setting-title">Клавиатура:</div>
+        <b-form-group class="setting-control">
+          <b-form-radio-group
+            id="keyboard-radios"
+            v-model="layoutSelected"
+            :class="ctrlSize"
+            :options="layoutOptions"
+            name="radios-btn-default"
+            buttons
+          />
+        </b-form-group>
+      </div>
+      <div class="setting">
+        <div id="hardmode-label" class="setting-title">
+          Искам да ми е трудно:
         </div>
-        <div class="container">
-          <h1>Настройки</h1>
-          <div class="settings">
-            <div class="setting">
-              <div id="keyboard-label" class="setting-title">Клавиатура:</div>
-              <b-form-group class="setting-control">
-                <b-form-radio-group
-                  id="keyboard-radios"
-                  v-model="layoutSelected"
-                  :class="ctrlSize"
-                  :options="layoutOptions"
-                  name="radios-btn-default"
-                  buttons
-                />
-              </b-form-group>
-            </div>
-            <div class="setting">
-              <div id="hardmode-label" class="setting-title">
-                Искам да ми е трудно:
-              </div>
-              <b-form-checkbox
-                v-model="isHardmode"
-                class="setting-control"
-                name="check-button"
-                size="lg"
-                switch
-              />
-            </div>
-            <div class="setting">
-              <div id="colorblind-label" class="setting-title">
-                Не различавам цветове:
-              </div>
-              <b-form-checkbox
-                v-model="isColorblind"
-                class="setting-control"
-                name="check-button"
-                size="lg"
-                switch
-              />
-            </div>
-            <div class="setting">
-              <div id="letindex-label" class="setting-title">
-                Буквите да се цъкат:
-              </div>
-              <b-form-checkbox
-                v-model="isLetterIndexable"
-                class="setting-control"
-                name="check-button"
-                size="lg"
-                switch
-              />
-            </div>
-          </div>
-          <b-tooltip target="keyboard-label" triggers="hover">
-            Подреба на клавиатурата
-          </b-tooltip>
-          <b-tooltip target="hardmode-label" triggers="hover">
-            Всяка подсказка трябва да се използва в следващите опити
-          </b-tooltip>
-          <b-tooltip target="colorblind-label" triggers="hover">
-            Цветовете са по-подходящи за хора с далтонизъм
-          </b-tooltip>
-          <b-tooltip target="letindex-label" triggers="hover">
-            Позволява натискането на квадратчетата за смяна на позицията на
-            писане
-          </b-tooltip>
+        <b-form-checkbox
+          v-model="isHardmode"
+          class="setting-control"
+          name="check-button"
+          size="lg"
+          switch
+        />
+      </div>
+      <div class="setting">
+        <div id="colorblind-label" class="setting-title">
+          Не различавам цветове:
         </div>
+        <b-form-checkbox
+          v-model="isColorblind"
+          class="setting-control"
+          name="check-button"
+          size="lg"
+          switch
+        />
+      </div>
+      <div class="setting">
+        <div id="letindex-label" class="setting-title">
+          Буквите да се цъкат:
+        </div>
+        <b-form-checkbox
+          v-model="isLetterIndexable"
+          class="setting-control"
+          name="check-button"
+          size="lg"
+          switch
+        />
       </div>
     </div>
-  </div>
+    <b-tooltip target="keyboard-label" triggers="hover">
+      Подреба на клавиатурата
+    </b-tooltip>
+    <b-tooltip target="hardmode-label" triggers="hover">
+      Всяка подсказка трябва да се използва в следващите опити
+    </b-tooltip>
+    <b-tooltip target="colorblind-label" triggers="hover">
+      Цветовете са по-подходящи за хора с далтонизъм
+    </b-tooltip>
+    <b-tooltip target="letindex-label" triggers="hover">
+      Позволява натискането на квадратчетата за смяна на позицията на писане
+    </b-tooltip>
+  </wordle-modal-window>
 </template>
 <script lang="ts">
 import { Component, Vue, Emit, Watch } from 'nuxt-property-decorator';
@@ -86,9 +74,16 @@ import {
   BIconXCircle,
   BTooltip
 } from 'bootstrap-vue';
+import WordleModalWindow from './WordleModalWindow.vue';
 
 @Component({
-  components: { BFormGroup, BFormRadioGroup, BIconXCircle, BTooltip }
+  components: {
+    BFormGroup,
+    BFormRadioGroup,
+    BIconXCircle,
+    BTooltip,
+    WordleModalWindow
+  }
 })
 export default class WordleSettingsWindow extends Vue {
   layoutSelected: string = 'phonetic';
@@ -150,11 +145,6 @@ export default class WordleSettingsWindow extends Vue {
   onLetterIndexableChange() {
     localStorage.setItem('wordle-letindex', this.isLetterIndexable.toString());
     this.$emit('letindex-changed', this.isLetterIndexable);
-  }
-
-  closeIf(event: MouseEvent) {
-    if ((event.target as HTMLElement).classList.contains('overlay'))
-      this.close();
   }
 }
 </script>
