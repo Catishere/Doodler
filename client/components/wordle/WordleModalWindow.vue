@@ -49,7 +49,7 @@ export default class WordleModalWindow extends Vue {
   position: relative;
   display: block;
   width: 90%;
-  max-width: 500px;
+  max-width: 600px;
   height: 500px;
   max-height: 85%;
   padding: 2% 2%;
@@ -69,7 +69,7 @@ export default class WordleModalWindow extends Vue {
 
 .scrollable {
   width: 100%;
-  height: 91%;
+  height: 95%;
   display: block;
   overflow-y: auto;
 }
