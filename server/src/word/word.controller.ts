@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param } from '@nestjs/common';
 import { WordService } from './word.service';
 import { GuessWordDto } from './dto/guess-word.dto';
 import { WordRequestDto } from './dto/word-request.dto';
+import { GetPossibleDto } from './dto/get-possible.dto';
 
 @Controller('word')
 export class WordController {
@@ -15,5 +16,10 @@ export class WordController {
   @Post('/guess')
   guess(@Body() guessWord: GuessWordDto) {
     return this.wordService.guess(guessWord);
+  }
+
+  @Get('/cheat/:word')
+  cheat(@Param() params: GetPossibleDto) {
+    return this.wordService.getPossible(params);
   }
 }

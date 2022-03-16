@@ -16,6 +16,7 @@ import {
   RandomWordResultErrorDto,
   RandomWordResultSuccessDto
 } from './dto/random-word-result.dto';
+import { GetPossibleDto } from './dto/get-possible.dto';
 
 @Injectable()
 export class WordService {
@@ -23,6 +24,19 @@ export class WordService {
     @InjectModel('Word') private WordModel: Model<WordDocument>,
     @InjectModel('User') private UserModel: Model<UserDocument>
   ) {}
+
+  async getPossible(params: GetPossibleDto) {
+    if (
+      params &&
+      params.word &&
+      params.word.match(/^[а-я_]{5}$/) &&
+      params.word !== '_____'
+    ) {
+      params.word = params.word.replace(/_/g, '.');
+      return await this.WordModel.find({ word: { $regex: params.word } });
+    }
+    return [];
+  }
 
   async guess(guessDto: GuessWordDto): Promise<GuessWordResultDto> {
     const { word, guess, _id } = guessDto;
