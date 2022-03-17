@@ -2,8 +2,7 @@
   <wordle-modal-window @close="close()">
     <h1>Настройки</h1>
     <div class="settings">
-      <div class="setting">
-        <div id="keyboard-label" class="setting-title">Клавиатура:</div>
+      <wordle-setting :id="'keyboard-label'" :label="'Клавиатура:'">
         <b-form-group class="setting-control">
           <b-form-radio-group
             id="keyboard-radios"
@@ -14,11 +13,8 @@
             buttons
           />
         </b-form-group>
-      </div>
-      <div class="setting">
-        <div id="hardmode-label" class="setting-title">
-          Искам да ми е трудно:
-        </div>
+      </wordle-setting>
+      <wordle-setting :id="'hardmode-label'" :label="'Искам да ми е трудно:'">
         <b-form-checkbox
           v-model="isHardmode"
           class="setting-control"
@@ -26,11 +22,11 @@
           size="lg"
           switch
         />
-      </div>
-      <div class="setting">
-        <div id="colorblind-label" class="setting-title">
-          Не различавам цветове:
-        </div>
+      </wordle-setting>
+      <wordle-setting
+        :id="'colorblind-label'"
+        :label="'Не различавам цветове:'"
+      >
         <b-form-checkbox
           v-model="isColorblind"
           class="setting-control"
@@ -38,11 +34,8 @@
           size="lg"
           switch
         />
-      </div>
-      <div class="setting">
-        <div id="letindex-label" class="setting-title">
-          Буквите да се цъкат:
-        </div>
+      </wordle-setting>
+      <wordle-setting :id="'letindex-label'" :label="'Буквите да се цъкат:'">
         <b-form-checkbox
           v-model="isLetterIndexable"
           class="setting-control"
@@ -50,7 +43,16 @@
           size="lg"
           switch
         />
-      </div>
+      </wordle-setting>
+      <wordle-setting :id="'rush-label'" :label="'Пъзел ръш:'">
+        <b-form-checkbox
+          v-model="isRush"
+          class="setting-control"
+          name="check-button"
+          size="lg"
+          switch
+        />
+      </wordle-setting>
     </div>
     <b-tooltip target="keyboard-label" triggers="hover">
       Подреба на клавиатурата
@@ -64,6 +66,11 @@
     <b-tooltip target="letindex-label" triggers="hover">
       Позволява натискането на квадратчетата за смяна на позицията на писане
     </b-tooltip>
+    <b-tooltip target="rush-label" triggers="hover">
+      Веднага след приключването на сегашната дума се пуска нова. При успешно
+      познаване на думата получаваш бонус време. Играта приключва, когато
+      таймерът свърши.
+    </b-tooltip>
   </wordle-modal-window>
 </template>
 <script lang="ts">
@@ -75,6 +82,7 @@ import {
   BTooltip
 } from 'bootstrap-vue';
 import WordleModalWindow from './WordleModalWindow.vue';
+import WordleSetting from './WordleSetting.vue';
 
 @Component({
   components: {
@@ -82,7 +90,8 @@ import WordleModalWindow from './WordleModalWindow.vue';
     BFormRadioGroup,
     BIconXCircle,
     BTooltip,
-    WordleModalWindow
+    WordleModalWindow,
+    WordleSetting
   }
 })
 export default class WordleSettingsWindow extends Vue {
@@ -91,6 +100,7 @@ export default class WordleSettingsWindow extends Vue {
   isHardmode: boolean = false;
   isColorblind: boolean = false;
   isLetterIndexable: boolean = false;
+  isRush: boolean = false;
 
   layoutOptions = [
     { text: 'БГР', value: 'phonetic' },
@@ -107,6 +117,7 @@ export default class WordleSettingsWindow extends Vue {
     this.isHardmode = localStorage.getItem('wordle-hardmode') === 'true';
     this.isColorblind = localStorage.getItem('wordle-colorblind') === 'true';
     this.isLetterIndexable = localStorage.getItem('wordle-letindex') === 'true';
+    this.isRush = localStorage.getItem('wordle-rush') === 'true';
   }
 
   @Emit()
@@ -146,6 +157,12 @@ export default class WordleSettingsWindow extends Vue {
     localStorage.setItem('wordle-letindex', this.isLetterIndexable.toString());
     this.$emit('letindex-changed', this.isLetterIndexable);
   }
+
+  @Watch('isRush')
+  onRushChange() {
+    localStorage.setItem('wordle-rush', this.isRush.toString());
+    this.$emit('rush-changed', this.isRush);
+  }
 }
 </script>
 
@@ -156,24 +173,5 @@ export default class WordleSettingsWindow extends Vue {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.setting {
-  margin-top: 10px;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-}
-
-.setting-title {
-  display: flex;
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-.setting-control {
-  display: flex;
 }
 </style>

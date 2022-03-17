@@ -55,6 +55,7 @@ export default class WordleModalWindow extends Vue {
   padding: 2% 2%;
   border-radius: 15px;
   background-color: rgb(41, 41, 41);
+  box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.5);
 }
 
 @media screen and (max-width: 767px) {
