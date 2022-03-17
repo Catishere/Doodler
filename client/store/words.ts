@@ -37,6 +37,12 @@ export default class WordsModule extends VuexModule {
 
   wordKey_ = '';
 
+  nextRound_ = false;
+
+  get nextRound() {
+    return this.nextRound_;
+  }
+
   get states() {
     return this.states_;
   }
@@ -59,6 +65,11 @@ export default class WordsModule extends VuexModule {
 
   get wordKey() {
     return this.wordKey_;
+  }
+
+  @Mutation
+  setNextRound(nextRound: boolean): void {
+    this.nextRound_ = nextRound;
   }
 
   @Mutation
@@ -179,6 +190,7 @@ export default class WordsModule extends VuexModule {
           setTimeout(() => {
             this.animations_[row][col] = 'idle';
             this.context.commit('setAnimations', this.animations_.slice());
+            if (col === 4) this.setNextRound(!this.nextRound);
             resolve();
           }, 150);
         }, 150);

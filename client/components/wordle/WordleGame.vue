@@ -10,6 +10,15 @@
       <button class="btn btn-dark" @click="showSettings = true">
         <b-icon-gear-fill />
       </button>
+      <button v-if="isRush" class="btn btn-danger" @click="startStopRush()">
+        {{ isRushRunning ? 'Стоп' : 'Старт' }}
+      </button>
+      <timer
+        v-if="isRush"
+        v-model="rushTime"
+        :is-running="isRushRunning"
+        @timeout="isRushRunning = false"
+      />
     </div>
     <div id="grid" class="grid">
       <div
@@ -50,18 +59,20 @@
         @keyboard-changed="(value) => changeKeyboard(value)"
         @hardmode-changed="(value) => changeHardmode(value)"
         @letindex-changed="(value) => changeLetterIndex(value)"
+        @rush-changed="(value) => changeRush(value)"
       />
     </transition>
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator';
+import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { BIconBarChartFill, BIconGearFill } from 'bootstrap-vue';
 import { getWordsModule } from '../../store';
 import WordStats from '../../types/word-stats.type';
 import WordleKeyboard from './WordleKeyboard.vue';
 import WordleLetter from './WordleLetter.vue';
 import WordleEndWindow from './WordleEndWindow.vue';
+import Timer from './Timer.vue';
 
 @Component({
   components: {
@@ -69,7 +80,8 @@ import WordleEndWindow from './WordleEndWindow.vue';
     BIconGearFill,
     WordleKeyboard,
     WordleEndWindow,
-    WordleLetter
+    WordleLetter,
+    Timer
   }
 })
 export default class WordleGame extends Vue {
@@ -79,6 +91,9 @@ export default class WordleGame extends Vue {
   isHardmode: boolean = false;
   isColMoved: boolean = false;
   isLetterIndexable: boolean = false;
+  isRush: boolean = false;
+  isRushRunning: boolean = false;
+  rushTime: number = 90;
   isWrongKeyboardDisplayed: boolean = false;
   showStats: boolean = false;
   showSettings: boolean = false;
@@ -155,6 +170,20 @@ export default class WordleGame extends Vue {
     this.isLetterIndexable = value;
   }
 
+  changeRush(value: boolean) {
+    this.isRush = value;
+  }
+
+  startStopRush() {
+    if (this.isRushRunning) {
+      this.isRushRunning = false;
+    } else {
+      this.rushTime = 90;
+      this.isRushRunning = true;
+      this.fetchNewWord();
+    }
+  }
+
   shareResults() {
     let grid: string = 'Doodler ' + this.row + '/6\n';
     for (let i = 0; i < this.row; i++) {
@@ -203,7 +232,7 @@ export default class WordleGame extends Vue {
   }
 
   async fetchNewWord($event?: Event) {
-    ($event?.target as HTMLButtonElement).blur();
+    if ($event) ($event?.target as HTMLButtonElement).blur();
     this.isWin = false;
     this.showStats = false;
     localStorage.removeItem('game-info');
@@ -364,9 +393,16 @@ export default class WordleGame extends Vue {
       this.isWin = result.every((el: string) => el === 'correct');
 
       if (this.isWin || rowCopy >= 5) {
+        if (this.isRushRunning) {
+          const addTime = this.isWin ? 15 : -20;
+          this.showToaster(
+            addTime < 0 ? `Минус 20 секунди` : `Получи 15 секунди`
+          );
+          this.rushTime += addTime;
+        }
         this.stats.actualWord = response.additional;
         this.saveStats();
-        this.showStats = true;
+        if (!this.isRushRunning) this.showStats = true;
       }
 
       this.incrementRow();
@@ -424,6 +460,15 @@ export default class WordleGame extends Vue {
       bodyClass: 'toast-body',
       headerClass: 'toast-header'
     });
+  }
+
+  @Watch('nextRound')
+  onNextRoundChange() {
+    if (this.isRushRunning && (this.isWin || this.row > 5)) this.fetchNewWord();
+  }
+
+  get nextRound() {
+    return getWordsModule(this.$store).nextRound;
   }
 
   get states() {
