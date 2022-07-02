@@ -44,7 +44,8 @@ const config = async () => ({
   modules: [
     // https://go.nuxtjs.dev/axios
     'bootstrap-vue/nuxt',
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/firebase'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -57,6 +58,20 @@ const config = async () => ({
   proxy: {
     '/api/': {
       target: 'http://localhost:4000/'
+    }
+  },
+  firebase: {
+    config: {
+      apiKey: '<apiKey>',
+      authDomain: '<authDomain>',
+      projectId: '<projectId>',
+      storageBucket: '<storageBucket>',
+      messagingSenderId: '<messagingSenderId>',
+      appId: '<appId>',
+      measurementId: '<measurementId>'
+    },
+    services: {
+      auth: true // Just as example. Can be any other service.
     }
   },
 
