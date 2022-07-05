@@ -25,6 +25,13 @@ export default class Index extends Vue {}
   flex-direction: column;
 }
 
+@media only screen and (min-width: 992px) {
+  .nav-link {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+}
+
 .title {
   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
