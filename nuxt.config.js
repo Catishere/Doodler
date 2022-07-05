@@ -41,12 +41,7 @@ const config = async () => ({
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    // https://go.nuxtjs.dev/axios
-    'bootstrap-vue/nuxt',
-    '@nuxtjs/axios',
-    '@nuxtjs/firebase'
-  ],
+  modules: ['@nuxtjs/firebase', 'bootstrap-vue/nuxt', '@nuxtjs/axios'],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
@@ -62,16 +57,17 @@ const config = async () => ({
   },
   firebase: {
     config: {
-      apiKey: '<apiKey>',
-      authDomain: '<authDomain>',
-      projectId: '<projectId>',
-      storageBucket: '<storageBucket>',
-      messagingSenderId: '<messagingSenderId>',
-      appId: '<appId>',
-      measurementId: '<measurementId>'
+      apiKey: 'AIzaSyCaawUSZ7dAHXoElVyuWPDLDATSuHN_JTU',
+      authDomain: 'woordler.firebaseapp.com',
+      projectId: 'woordler',
+      storageBucket: 'woordler.appspot.com',
+      messagingSenderId: '1023294061740',
+      appId: '1:1023294061740:web:8ea5f3e005c50fde29f309',
+      measurementId: 'G-MX85MV6MYP'
     },
     services: {
-      auth: true // Just as example. Can be any other service.
+      auth: true,
+      firestore: true
     }
   },
 
