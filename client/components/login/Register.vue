@@ -11,14 +11,14 @@
             <label> Име: </label>
             <b-form-input
               id="name-input"
-              v-model="form.name"
+              v-model="form.displayName"
               type="text"
               placeholder="Въведи име"
             />
             <label> Аватар: </label>
             <b-form-input
-              id="avatar-input"
-              v-model="form.avatar"
+              id="photourl-input"
+              v-model="form.photoURL"
               type="url"
               placeholder="Въведи аватар"
             />
@@ -56,8 +56,8 @@ import { RegisterInfo } from '~/client/types/login.types';
 export default class Register extends Vue {
   form: RegisterInfo = {
     email: '',
-    name: '',
-    avatar: '',
+    displayName: '',
+    photoURL: '',
     password: ''
   };
 
@@ -76,8 +76,8 @@ export default class Register extends Vue {
         if (userCred.user?.uid) Cookies.set('user', userCred.user?.uid);
         this.$router.push('/profile');
         const user = {
-          name: this.form.name,
-          avatar: this.form.avatar,
+          displayName: this.form.displayName,
+          photoURL: this.form.photoURL,
           uid: userCred.user?.uid,
           email: userCred.user?.email
         };

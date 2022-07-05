@@ -25,6 +25,9 @@
               required
             />
           </b-form-group>
+          <button class="btn btn-light" @click="loginWithGoogle()">
+            <b-icon-google /> <b> Влез с Google </b>
+          </button>
           <b-button type="submit" variant="primary">Влез</b-button>
           <nuxt-link to="/register">
             <b-button> Регистрирай се </b-button>
@@ -38,9 +41,12 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import Cookies from 'js-cookie';
+import { BIconGoogle } from 'bootstrap-vue';
+import { googleProvider } from '../../providers/google-auth-provider';
+import { getUsersModule } from '../../store';
 import { LoginInfo } from '~/client/types/login.types';
 
-@Component({})
+@Component({ components: { BIconGoogle } })
 export default class Login extends Vue {
   form: LoginInfo = {
     email: '',
@@ -50,12 +56,32 @@ export default class Login extends Vue {
   errorMessage: string = '';
   showAlert: boolean = false;
 
+  loginWithGoogle() {
+    this.$fire.auth
+      .signInWithPopup(googleProvider)
+      .then((result) => {
+        this.$fire.firestore.collection('users').doc(result.user?.uid).set({
+          displayName: result.user?.displayName,
+          email: result.user?.email,
+          photoURL: result.user?.photoURL,
+          uid: result.user?.uid
+        });
+        if (result.user?.uid) Cookies.set('user', result.user?.uid);
+        getUsersModule(this.$store).setLogged(true);
+        this.$router.push('/profile');
+      })
+      .catch((error) => {
+        console.log(error.code);
+      });
+  }
+
   onSubmit(event: Event) {
     event.preventDefault();
     this.$fire.auth
       .signInWithEmailAndPassword(this.form.email, this.form.password)
       .then((userCred) => {
         if (userCred.user?.uid) Cookies.set('user', userCred.user?.uid);
+        getUsersModule(this.$store).setLogged(true);
         this.$router.push('/profile');
       })
       .catch((error) => {

@@ -7,10 +7,6 @@ import { UserInfo } from '../types/login.types';
 
 @Component({ components: { BLink } })
 export default class NavbarComponent extends Vue {
-  logged: boolean = false;
-  name: string = '';
-  avatar: string = '';
-
   async logout() {
     await this.$fire.auth.signOut();
     Cookies.remove('user');
@@ -19,6 +15,14 @@ export default class NavbarComponent extends Vue {
 
   setUserData(user: UserInfo): void {
     getUsersModule(this.$store).setUserData(user);
+  }
+
+  setLogged(logged: boolean): void {
+    getUsersModule(this.$store).setLogged(logged);
+  }
+
+  isLogged(): boolean {
+    return getUsersModule(this.$store).logged;
   }
 
   getUserData(): UserInfo {
@@ -32,8 +36,6 @@ export default class NavbarComponent extends Vue {
       );
       if (currentUser) {
         this.setUserData(currentUser);
-        this.name = currentUser.name;
-        this.avatar = currentUser.avatar;
       }
     }
   }
@@ -41,7 +43,7 @@ export default class NavbarComponent extends Vue {
   mounted() {
     const uid = Cookies.get('user');
     if (uid && uid !== '') {
-      this.logged = true;
+      this.setLogged(true);
     }
   }
 }
@@ -69,15 +71,20 @@ export default class NavbarComponent extends Vue {
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
           <template #button-content>
-            <em>{{ logged ? name : 'Анонимен' }}</em>
+            <img
+              v-if="isLogged()"
+              :src="getUserData().photoURL"
+              class="avatar"
+            />
+            <em>{{ isLogged() ? getUserData().displayName : 'Анонимен' }}</em>
           </template>
-          <b-dropdown-item v-if="logged" to="/profile" nuxt>
+          <b-dropdown-item v-if="isLogged()" to="/profile" nuxt>
             Профил
           </b-dropdown-item>
-          <b-dropdown-item v-if="!logged" to="/login" nuxt>
+          <b-dropdown-item v-if="!isLogged()" to="/login" nuxt>
             Влез
           </b-dropdown-item>
-          <b-dropdown-item v-if="logged" href="/" @click="logout()">
+          <b-dropdown-item v-if="isLogged()" href="/" @click="logout()">
             Излез
           </b-dropdown-item>
         </b-nav-item-dropdown>
@@ -94,5 +101,12 @@ export default class NavbarComponent extends Vue {
 .nav-item {
   text-decoration: none;
   color: rgb(0, 0, 0);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 </style>

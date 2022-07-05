@@ -7,17 +7,17 @@ import { UserInfo } from '../types/login.types';
   namespaced: true
 })
 export default class UsersModule extends VuexModule {
-  name_: string = '';
-  avatar_: string = '';
+  displayName_: string = '';
+  photoURL_: string = '';
   email_: string = '';
   logged_: boolean = false;
 
-  get name() {
-    return this.name_;
+  get displayName() {
+    return this.displayName_;
   }
 
-  get avatar() {
-    return this.avatar_;
+  get photoURL() {
+    return this.photoURL_;
   }
 
   get email() {
@@ -30,25 +30,25 @@ export default class UsersModule extends VuexModule {
 
   get userData() {
     return {
-      name: this.name,
-      avatar: this.avatar,
+      displayName: this.displayName,
+      photoURL: this.photoURL,
       email: this.email
     };
   }
 
   @Mutation
-  setName(name: string): void {
-    this.name_ = name;
+  setDisplayName(displayName: string): void {
+    this.displayName_ = displayName;
   }
 
   @Mutation
-  setAvatar(name: string): void {
-    this.name_ = name;
+  setPhotoURL(photoURL: string): void {
+    this.photoURL_ = photoURL;
   }
 
   @Mutation
-  setEmail(name: string): void {
-    this.name_ = name;
+  setEmail(email: string): void {
+    this.email_ = email;
   }
 
   @Mutation
@@ -58,17 +58,9 @@ export default class UsersModule extends VuexModule {
 
   @Action({ rawError: true })
   setUserData(data: UserInfo) {
-    const { name, avatar, email } = data;
-    this.context.commit('setName', name);
-    this.context.commit('setAvatar', avatar);
-    this.context.commit('setEmail', email);
-  }
-
-  @Action({ rawError: true })
-  getUserData(data: UserInfo) {
-    const { name, avatar, email } = data;
-    this.context.commit('setName', name);
-    this.context.commit('setAvatar', avatar);
+    const { displayName, photoURL, email } = data;
+    this.context.commit('setDisplayName', displayName);
+    this.context.commit('setPhotoURL', photoURL);
     this.context.commit('setEmail', email);
   }
 }

@@ -5,8 +5,8 @@ export interface LoginInfo {
 
 export interface UserInfo {
   email: string;
-  name: string;
-  avatar: string;
+  displayName: string;
+  photoURL: string;
 }
 
 export interface RegisterInfo extends LoginInfo, UserInfo {}
