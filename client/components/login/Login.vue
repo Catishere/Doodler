@@ -25,7 +25,11 @@
               required
             />
           </b-form-group>
-          <button class="btn btn-light" @click="loginWithGoogle()">
+          <button
+            type="button"
+            class="btn btn-light"
+            @click="loginWithGoogle()"
+          >
             <b-icon-google /> <b> Влез с Google </b>
           </button>
           <b-button type="submit" variant="primary">Влез</b-button>
@@ -76,6 +80,7 @@ export default class Login extends Vue {
   }
 
   onSubmit(event: Event) {
+    console.log('fuck');
     event.preventDefault();
     this.$fire.auth
       .signInWithEmailAndPassword(this.form.email, this.form.password)
