@@ -57,13 +57,13 @@ const config = async () => ({
   },
   firebase: {
     config: {
-      apiKey: 'AIzaSyCaawUSZ7dAHXoElVyuWPDLDATSuHN_JTU',
-      authDomain: 'woordler.firebaseapp.com',
-      projectId: 'woordler',
-      storageBucket: 'woordler.appspot.com',
-      messagingSenderId: '1023294061740',
-      appId: '1:1023294061740:web:8ea5f3e005c50fde29f309',
-      measurementId: 'G-MX85MV6MYP'
+      apiKey: process.env.FB_API_KEY,
+      authDomain: process.env.FB_AUTH_DOMAIN,
+      projectId: process.env.FB_PROJECT_ID,
+      storageBucket: process.env.FB_STORAGE_BUCKET,
+      messagingSenderId: process.env.FB_MESSAGING_SENDER_ID,
+      appId: process.env.FB_APP_ID,
+      measurementId: process.env.FB_MEASUREMENT_ID
     },
     services: {
       auth: true,
