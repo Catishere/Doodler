@@ -11,6 +11,7 @@ export default class UsersModule extends VuexModule {
   photoURL_: string = '';
   email_: string = '';
   logged_: boolean = false;
+  initials_: string = '';
 
   get displayName() {
     return this.displayName_;
@@ -26,6 +27,10 @@ export default class UsersModule extends VuexModule {
 
   get logged() {
     return this.logged_;
+  }
+
+  get initials() {
+    return this.initials_;
   }
 
   get userData() {
@@ -47,6 +52,11 @@ export default class UsersModule extends VuexModule {
   }
 
   @Mutation
+  setInitials(initials: string): void {
+    this.initials_ = initials;
+  }
+
+  @Mutation
   setEmail(email: string): void {
     this.email_ = email;
   }
@@ -62,5 +72,16 @@ export default class UsersModule extends VuexModule {
     this.context.commit('setDisplayName', displayName);
     this.context.commit('setPhotoURL', photoURL);
     this.context.commit('setEmail', email);
+    try {
+      this.context.commit(
+        'setInitials',
+        this.displayName
+          .split(' ')
+          .map((name) => name[0])
+          .join('')
+      );
+    } catch (e) {
+      this.context.commit('setInitials', '');
+    }
   }
 }

@@ -18,7 +18,7 @@ export default class Profile extends Vue {
   displayName?: string | null = '';
   photoURL?: string = '';
 
-  async beforeCreate() {
+  async beforeMount() {
     const uid = Cookies.get('user');
     if (!uid || uid === '') {
       this.$router.push('/');

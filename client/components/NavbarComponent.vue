@@ -7,10 +7,13 @@ import { UserInfo } from '../types/login.types';
 
 @Component({ components: { BLink } })
 export default class NavbarComponent extends Vue {
-  async logout() {
-    await this.$fire.auth.signOut();
-    Cookies.remove('user');
-    localStorage.removeItem('currentUser');
+  logout() {
+    this.$fire.auth.signOut().then(() => {
+      this.setLogged(false);
+      Cookies.remove('user');
+      localStorage.removeItem('currentUser');
+      this.$router.push('/');
+    });
   }
 
   setUserData(user: UserInfo): void {
@@ -19,6 +22,10 @@ export default class NavbarComponent extends Vue {
 
   setLogged(logged: boolean): void {
     getUsersModule(this.$store).setLogged(logged);
+  }
+
+  getInitials(): string {
+    return getUsersModule(this.$store).initials;
   }
 
   isLogged(): boolean {
@@ -71,12 +78,14 @@ export default class NavbarComponent extends Vue {
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
           <template #button-content>
-            <img
+            <b-avatar
               v-if="isLogged()"
+              variant="dark"
               :src="getUserData().photoURL"
-              class="avatar"
-              referrerpolicy="no-referrer"
-            />
+              :text="getInitials()"
+              size="30px"
+            ></b-avatar>
+
             <em>{{ isLogged() ? getUserData().displayName : 'Анонимен' }}</em>
           </template>
           <b-dropdown-item v-if="isLogged()" to="/profile" nuxt>
@@ -85,7 +94,7 @@ export default class NavbarComponent extends Vue {
           <b-dropdown-item v-if="!isLogged()" to="/login" nuxt>
             Влез
           </b-dropdown-item>
-          <b-dropdown-item v-if="isLogged()" href="/" @click="logout()">
+          <b-dropdown-item v-if="isLogged()" @click="logout()">
             Излез
           </b-dropdown-item>
         </b-nav-item-dropdown>

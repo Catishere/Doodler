@@ -80,7 +80,6 @@ export default class Login extends Vue {
   }
 
   onSubmit(event: Event) {
-    console.log('fuck');
     event.preventDefault();
     this.$fire.auth
       .signInWithEmailAndPassword(this.form.email, this.form.password)
