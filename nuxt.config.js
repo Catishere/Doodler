@@ -1,3 +1,5 @@
+import path from 'path';
+import fs from 'fs';
 import bootstrap from './.nest/nest.js';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -20,6 +22,25 @@ const config = async () => ({
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
+  server:
+    isLocal && !isDev
+      ? {
+          https: {
+            key: fs.readFileSync(
+              path.resolve(__dirname, './client/ssl/key.pem')
+            ),
+            cert: fs.readFileSync(
+              path.resolve(__dirname, './client/ssl/cert.pem')
+            )
+          }
+        }
+      : {},
+
+  // serverMiddleware: isDev
+  //   ? []
+  //   : isLocal
+  //   ? [{ path: '/api', handler: await bootstrap() }]
+  //   : ['redirect-ssl', { path: '/api', handler: await bootstrap() }],
 
   serverMiddleware: isDev
     ? []
