@@ -75,6 +75,7 @@ export default class NavbarComponent extends Vue {
               v-if="isLogged()"
               :src="getUserData().photoURL"
               class="avatar"
+              referrerpolicy="no-referrer"
             />
             <em>{{ isLogged() ? getUserData().displayName : 'Анонимен' }}</em>
           </template>

@@ -3,7 +3,7 @@
     <div class="header">Profile</div>
     <div>Е-майл: {{ email }}</div>
     <div>Име: {{ displayName }}</div>
-    <img :src="photoURL" />
+    <img :src="photoURL" referrerpolicy="no-referrer" />
   </div>
 </template>
 
