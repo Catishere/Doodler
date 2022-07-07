@@ -7,7 +7,11 @@
           {{ errorMessage }}
         </b-alert>
         <b-form @submit="onSubmit">
-          <b-form-group id="input-group" label-for="input">
+          <b-form-group
+            id="input-group"
+            label-for="input"
+            class="form-container"
+          >
             <label> Е-майл: </label>
             <b-form-input
               id="email-input"
@@ -25,17 +29,19 @@
               required
             />
           </b-form-group>
-          <button
-            type="button"
-            class="btn btn-light"
-            @click="loginWithGoogle()"
-          >
-            <b-icon-google /> <b> Влез с Google </b>
-          </button>
-          <b-button type="submit" variant="primary">Влез</b-button>
-          <nuxt-link to="/register">
-            <b-button> Регистрирай се </b-button>
-          </nuxt-link>
+          <b-button-group role="group" class="mt-3 form-container">
+            <b-button type="submit" variant="primary">Влез</b-button>
+            <b-button to="/register" nuxt> Регистрирай се </b-button>
+          </b-button-group>
+          <b-button-group role="group" class="mt-1 form-container">
+            <button
+              type="button"
+              class="btn btn-light"
+              @click="loginWithGoogle()"
+            >
+              <b-icon-google /> <b> Влез с Google </b>
+            </button>
+          </b-button-group>
         </b-form>
       </div>
     </div>
@@ -109,5 +115,10 @@ export default class Login extends Vue {
 <style scoped lang="css">
 .login-container {
   height: 100%;
+}
+
+.form-container {
+  width: 90%;
+  margin: 0 auto;
 }
 </style>
