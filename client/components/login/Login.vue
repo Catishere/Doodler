@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h3>Вход</h3>
+      <h3 class="login-title">Вход</h3>
       <div>
         <b-alert v-model="showAlert" variant="danger" dismissible>
           {{ errorMessage }}
@@ -117,8 +117,15 @@ export default class Login extends Vue {
   height: 100%;
 }
 
+.login-title {
+  margin-top: 20px;
+}
+
 .form-container {
   width: 90%;
   margin: 0 auto;
+}
+label {
+  margin-top: 5px;
 }
 </style>

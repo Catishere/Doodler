@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h3>Регистрация</h3>
+      <h3 class="register-title">Регистрация</h3>
       <div>
         <b-alert v-model="showAlert" variant="danger" dismissible>
           {{ errorMessage }}
@@ -22,20 +22,20 @@
               type="url"
               placeholder="Въведи аватар"
             />
-            <label> Email: </label>
+            <label> Е-майл: </label>
             <b-form-input
               id="email-input"
               v-model="form.email"
               type="email"
-              placeholder="Enter email"
+              placeholder="Въведи е-майл"
               required
             />
-            <label> Password: </label>
+            <label> Парола: </label>
             <b-form-input
               id="password-input"
               v-model="form.password"
               type="password"
-              placeholder="Enter password"
+              placeholder="Въведи парола"
               required
             />
           </b-form-group>
@@ -101,5 +101,13 @@ export default class Register extends Vue {
 <style scoped lang="css">
 .login-container {
   height: 100%;
+}
+
+.register-title {
+  margin-top: 20px;
+}
+
+label {
+  margin-top: 5px;
 }
 </style>
