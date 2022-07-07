@@ -16,7 +16,7 @@ export default class Index extends Vue {}
 
 <style>
 .page-container {
-  justify-content: top;
+  justify-content: flex-start;
   width: 100%;
   display: flex;
   align-items: center;

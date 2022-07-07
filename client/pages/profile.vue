@@ -16,7 +16,7 @@ export default class LoginPage extends Vue {}
 
 <style scoped>
 .page-container {
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   display: flex;
   align-items: center;
