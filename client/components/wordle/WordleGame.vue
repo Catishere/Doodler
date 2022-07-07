@@ -10,13 +10,18 @@
       <button class="btn btn-dark" @click="showSettings = true">
         <b-icon-gear-fill />
       </button>
-      <button v-if="isRush" class="btn btn-danger" @click="startStopRush()">
+      <button
+        v-if="isRush"
+        class="btn btn-danger timer"
+        @click="startStopRush()"
+      >
         {{ isRushRunning ? 'Стоп' : 'Старт' }}
       </button>
       <timer
         v-if="isRush"
         v-model="rushTime"
         :is-running="isRushRunning"
+        class="timer"
         @timeout="isRushRunning = false"
       />
     </div>
@@ -656,5 +661,11 @@ export default class WordleGame extends Vue {
   font-weight: bolder;
   border-radius: 15px;
   text-align: center;
+}
+
+@media screen and (max-width: 351px) {
+  .timer {
+    display: none;
+  }
 }
 </style>
