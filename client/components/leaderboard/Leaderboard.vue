@@ -12,6 +12,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
+import { LeaderboardStats } from '~/client/types/word-stats.type';
 
 @Component({})
 export default class Leaderboard extends Vue {
@@ -24,15 +25,13 @@ export default class Leaderboard extends Vue {
       .get();
     this.users = snap.docs
       .map((doc) => {
-        const d = doc.data();
+        const dd = doc.data();
+        const ls = dd.stats as LeaderboardStats;
         const solveSum =
-          d.stats.solves.reduce(
-            (a: number, b: number, index: number) => a + b * (index + 1),
-            0
-          ) +
-          (d.stats.games - d.stats.wins) * 7;
-        d.stats.average = solveSum / d.stats.games;
-        return d;
+          ls.solves.reduce((a, b, index) => a + b * (index + 1), 0) +
+          (ls.games - ls.wins) * 7;
+        ls.average = solveSum / ls.games;
+        return dd;
       })
       .sort((a, b) => a.stats.average - b.stats.average);
   }

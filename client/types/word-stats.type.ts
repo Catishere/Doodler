@@ -9,4 +9,8 @@ interface WordStats {
   actualWord: string; // actual word
 }
 
+export interface LeaderboardStats extends WordStats {
+  average: number;
+}
+
 export default WordStats;

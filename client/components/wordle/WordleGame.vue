@@ -294,7 +294,7 @@ export default class WordleGame extends Vue {
             maxStreak: this.stats.maxStreak,
             lastTry: this.stats.lastTry,
             success: this.stats.success
-          }
+          } as WordStats
         });
     }
   }
