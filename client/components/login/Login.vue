@@ -70,7 +70,7 @@ export default class Login extends Vue {
     this.$fire.auth
       .signInWithPopup(googleProvider)
       .then((result) => {
-        this.$fire.firestore.collection('users').doc(result.user?.uid).set({
+        this.$fire.firestore.collection('users').doc(result.user?.uid).update({
           displayName: result.user?.displayName,
           email: result.user?.email,
           photoURL: result.user?.photoURL,

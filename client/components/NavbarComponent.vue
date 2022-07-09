@@ -71,6 +71,7 @@ export default class NavbarComponent extends Vue {
       <b-navbar-nav>
         <b-nav-item to="/" nuxt> У дома </b-nav-item>
         <b-nav-item to="/wordle" nuxt> Думите </b-nav-item>
+        <b-nav-item to="/leaderboard" nuxt> Класация </b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->

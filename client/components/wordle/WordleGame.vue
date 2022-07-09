@@ -72,6 +72,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { BIconBarChartFill, BIconGearFill } from 'bootstrap-vue';
+import Cookies from 'js-cookie';
 import { getWordsModule } from '../../store';
 import WordStats from '../../types/word-stats.type';
 import WordleKeyboard from './WordleKeyboard.vue';
@@ -277,7 +278,25 @@ export default class WordleGame extends Vue {
     this.stats.maxStreak = Math.max(this.stats.maxStreak, this.stats.streak);
     this.stats.lastTry = this.isWin ? this.row : -1;
     this.stats.success = this.isWin;
-    localStorage.setItem('wordle-stat', JSON.stringify(this.stats));
+
+    const uid = Cookies.get('user') ?? '';
+    localStorage.setItem(`wordle-stat${uid}`, JSON.stringify(this.stats));
+    if (uid !== '') {
+      this.$fire.firestore
+        .collection('users')
+        .doc(uid)
+        .update({
+          stats: {
+            games: this.stats.games,
+            wins: this.stats.wins,
+            solves: this.stats.solves,
+            streak: this.stats.streak,
+            maxStreak: this.stats.maxStreak,
+            lastTry: this.stats.lastTry,
+            success: this.stats.success
+          }
+        });
+    }
   }
 
   flipAllLetters(states: string[][]) {
@@ -302,10 +321,28 @@ export default class WordleGame extends Vue {
   }
 
   loadStats() {
-    this.stats = JSON.parse(
-      localStorage.getItem('wordle-stat') ??
-        '{"games": 0, "wins": 0, "streak": 0, "maxStreak": 0, "solves": [0, 0, 0, 0, 0, 0]}'
-    );
+    const uid = Cookies.get('user') ?? '';
+
+    if (uid !== '') {
+      this.$fire.firestore
+        .collection('users')
+        .doc(uid)
+        .get()
+        .then((doc) => {
+          this.stats = doc.data()?.stats ?? {
+            games: 0,
+            wins: 0,
+            streak: 0,
+            maxStreak: 0,
+            solves: [0, 0, 0, 0, 0, 0]
+          };
+        });
+    } else {
+      this.stats = JSON.parse(
+        localStorage.getItem(`wordle-stat${uid}`) ??
+          '{"games": 0, "wins": 0, "streak": 0, "maxStreak": 0, "solves": [0, 0, 0, 0, 0, 0]}'
+      );
+    }
   }
 
   shakeRow(id: number) {
