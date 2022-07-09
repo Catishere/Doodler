@@ -6,38 +6,49 @@
         <b-alert v-model="showAlert" variant="danger" dismissible>
           {{ errorMessage }}
         </b-alert>
-        <b-form @submit="onSubmit">
+        <b-form class="form-text-control" @submit="onSubmit">
           <b-form-group id="input-group" label-for="input">
             <label> Име: </label>
             <b-form-input
               id="name-input"
               v-model="form.displayName"
+              class="sm-responsive"
+              :state="nameValidation()"
               type="text"
               placeholder="Въведи име"
+              trim
             />
             <label> Аватар: </label>
             <b-form-input
               id="photourl-input"
               v-model="form.photoURL"
+              class="sm-responsive"
               type="url"
               placeholder="Въведи аватар"
+              trim
             />
             <label> Е-майл: </label>
             <b-form-input
               id="email-input"
               v-model="form.email"
+              class="sm-responsive"
               type="email"
               placeholder="Въведи е-майл"
+              trim
               required
             />
             <label> Парола: </label>
             <b-form-input
               id="password-input"
               v-model="form.password"
+              class="sm-responsive"
               type="password"
               placeholder="Въведи парола"
               required
             />
+            <b-form-invalid-feedback id="name-input-live-feedback">
+              Името трябва да е поне 3 символа
+            </b-form-invalid-feedback>
           </b-form-group>
           <b-button type="submit" variant="primary">Създай</b-button>
           <nuxt-link to="/login"><b-button>Имаш акаунт?</b-button></nuxt-link>
@@ -63,13 +74,25 @@ export default class Register extends Vue {
 
   errorMessage: string = '';
   showAlert: boolean = false;
+  showFieldStatus: boolean = false;
 
   writeUserData(user: any) {
     this.$fire.firestore.collection('users').doc(user.uid).set(user);
   }
 
+  nameValidation() {
+    return !this.showFieldStatus || this.form.displayName.length >= 3
+      ? null
+      : false;
+  }
+
   onSubmit(event: Event) {
     event.preventDefault();
+    if (this.form.displayName.length < 3) {
+      this.showFieldStatus = true;
+      setTimeout(() => (this.showFieldStatus = false), 2000);
+      return;
+    }
     this.$fire.auth
       .createUserWithEmailAndPassword(this.form.email, this.form.password)
       .then((userCred) => {
@@ -101,6 +124,14 @@ export default class Register extends Vue {
 <style scoped lang="css">
 .login-container {
   height: 100%;
+  width: 320px;
+  overflow-y: auto;
+}
+
+@media screen and (max-width: 400px) {
+  .login-container {
+    width: 80%;
+  }
 }
 
 .register-title {
@@ -109,5 +140,14 @@ export default class Register extends Vue {
 
 label {
   margin-top: 5px;
+}
+
+@media screen and (max-height: 480px) {
+  .form-text-control {
+    font-size: 0.8rem;
+  }
+  .sm-responsive {
+    height: 28px;
+  }
 }
 </style>
