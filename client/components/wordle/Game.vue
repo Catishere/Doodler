@@ -17,7 +17,7 @@
       >
         {{ isRushRunning ? 'Стоп' : 'Старт' }}
       </button>
-      <timer
+      <wordle-timer
         v-if="isRush"
         v-model="rushTime"
         :is-running="isRushRunning"
@@ -75,22 +75,14 @@ import { BIconBarChartFill, BIconGearFill } from 'bootstrap-vue';
 import Cookies from 'js-cookie';
 import { getWordsModule } from '../../store';
 import WordStats from '../../types/word-stats.type';
-import WordleKeyboard from './WordleKeyboard.vue';
-import WordleLetter from './WordleLetter.vue';
-import WordleEndWindow from './WordleEndWindow.vue';
-import Timer from './Timer.vue';
 
 @Component({
   components: {
     BIconBarChartFill,
-    BIconGearFill,
-    WordleKeyboard,
-    WordleEndWindow,
-    WordleLetter,
-    Timer
+    BIconGearFill
   }
 })
-export default class WordleGame extends Vue {
+export default class Game extends Vue {
   id: string = '';
   rowAnimations: string[] = ['', '', '', '', '', ''];
   isChecking: boolean = false;

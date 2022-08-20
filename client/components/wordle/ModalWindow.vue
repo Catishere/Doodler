@@ -18,7 +18,7 @@ import { Component, Emit, Vue } from 'nuxt-property-decorator';
 import { BIconXCircle } from 'bootstrap-vue';
 
 @Component({ components: { BIconXCircle } })
-export default class WordleModalWindow extends Vue {
+export default class ModalWindow extends Vue {
   @Emit()
   close() {
     return false;

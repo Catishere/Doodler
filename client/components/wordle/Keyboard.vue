@@ -30,7 +30,7 @@ import {
 } from 'client/types/keyboard-layouts.type';
 
 @Component({})
-export default class WordleKeyboard extends Vue {
+export default class Keyboard extends Vue {
   @Prop({ default: [] })
   words!: String[][];
 

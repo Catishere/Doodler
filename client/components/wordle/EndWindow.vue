@@ -54,13 +54,12 @@
 <script lang="ts">
 import { Prop, Component, Vue, Emit } from 'nuxt-property-decorator';
 import { BIconShareFill, BIconXCircle, BProgress } from 'bootstrap-vue';
-import WordleModalWindow from './WordleModalWindow.vue';
 import WordStats from '@/client/types/word-stats.type';
 
 @Component({
-  components: { BIconShareFill, BIconXCircle, BProgress, WordleModalWindow }
+  components: { BIconShareFill, BIconXCircle, BProgress }
 })
-export default class WordleEndWindow extends Vue {
+export default class EndWindow extends Vue {
   @Prop({ default: {} })
   stats!: WordStats;
 

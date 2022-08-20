@@ -2,7 +2,11 @@ import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 import WordsModule from '../../store/words';
 import { getWordsModule } from '../../store';
-import WordleGame from './WordleGame.vue';
+import Game from './Game.vue';
+import Letter from './Letter.vue';
+import EndWindow from './EndWindow.vue';
+import Keyboard from './Keyboard.vue';
+import SettingsWindow from './SettingsWindow.vue';
 
 const localVue = createLocalVue();
 
@@ -20,7 +24,14 @@ describe('WordleGame.vue', () => {
   });
 
   test('dispatches "KeyboardPress" on keyboard click', async () => {
-    const wrapper = mount(WordleGame, {
+    const wrapper = mount(Game, {
+      components: {
+        WordleLetter: Letter,
+        WordleKeyboard: Keyboard,
+        WordleEndWindow: EndWindow,
+        WordleSettingsWindow: SettingsWindow
+      },
+      stubs: ['wordle-modal-window'],
       store,
       localVue,
       attachTo: document.body,
@@ -57,17 +68,20 @@ describe('WordleGame.vue', () => {
       }
     });
     const input = wrapper.findAll('.keyboard-key');
-    const keyboard = wrapper.findComponent({ name: 'WordleKeyboard' });
+    expect(input.length).toBe(32);
+    const keyboard = wrapper.findComponent({ name: 'Keyboard' });
+    expect(keyboard.exists()).toBe(true);
     await input.at(12).trigger('click'); // 'С'
-    expect(getWordsModule(wrapper.vm.$store).col).toBe(0);
-    await input.at(18).trigger('click'); // 'К'
+    await input.at(12).trigger('click'); // 'С'
     expect(getWordsModule(wrapper.vm.$store).col).toBe(1);
-    await input.at(3).trigger('click'); // 'Р'
+    await input.at(18).trigger('click'); // 'К'
     expect(getWordsModule(wrapper.vm.$store).col).toBe(2);
-    await input.at(7).trigger('click'); // 'И'
+    await input.at(3).trigger('click'); // 'Р'
     expect(getWordsModule(wrapper.vm.$store).col).toBe(3);
-    await input.at(4).trigger('click'); // 'Т'
+    await input.at(7).trigger('click'); // 'И'
     expect(getWordsModule(wrapper.vm.$store).col).toBe(4);
+    await input.at(4).trigger('click'); // 'Т'
+    expect(getWordsModule(wrapper.vm.$store).col).toBe(5);
     await input.at(4).trigger('click'); // 'Т'
     await input.at(4).trigger('click'); // 'Т'
     await input.at(4).trigger('click'); // 'Т'
@@ -78,7 +92,7 @@ describe('WordleGame.vue', () => {
     await input.at(22).trigger('click'); // 'Enter'
     await input.at(22).trigger('click'); // 'Enter'
     await input.at(22).trigger('click'); // 'Enter'
-    expect(keyboard.emitted('keyboard-press')).toHaveLength(14);
+    expect(keyboard.emitted('keyboard-press')).toHaveLength(15);
     jest.setTimeout(1000);
     expect(getWordsModule(wrapper.vm.$store).words[0].join('')).toBe('скрит');
     expect(getWordsModule(wrapper.vm.$store).row).toBe(1);

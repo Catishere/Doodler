@@ -77,24 +77,26 @@
 import { Component, Vue, Emit, Watch } from 'nuxt-property-decorator';
 import {
   BFormGroup,
+  BFormCheckbox,
   BFormRadioGroup,
   BIconXCircle,
   BTooltip
 } from 'bootstrap-vue';
-import WordleModalWindow from './WordleModalWindow.vue';
-import WordleSetting from './WordleSetting.vue';
+import WordleModalWindow from './ModalWindow.vue';
+import WordleSetting from './Setting.vue';
 
 @Component({
   components: {
     BFormGroup,
     BFormRadioGroup,
+    BFormCheckbox,
     BIconXCircle,
     BTooltip,
     WordleModalWindow,
     WordleSetting
   }
 })
-export default class WordleSettingsWindow extends Vue {
+export default class SettingsWindow extends Vue {
   layoutSelected: string = 'phonetic';
   ctrlSize: string = '';
   isHardmode: boolean = false;

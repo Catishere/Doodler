@@ -13,7 +13,7 @@
 import { Prop, Component, Vue } from 'nuxt-property-decorator';
 
 @Component({})
-export default class WordleLetter extends Vue {
+export default class Letter extends Vue {
   @Prop({ default: ' ' })
   letter!: string;
 
