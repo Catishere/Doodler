@@ -8,7 +8,16 @@ describe('WordController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [WordController],
-      providers: [WordService]
+      providers: [
+        {
+          provide: WordService,
+          useValue: {
+            WordModel: jest.fn().mockResolvedValue(() => {
+              return 'yes';
+            })
+          }
+        }
+      ]
     }).compile();
 
     controller = module.get<WordController>(WordController);
